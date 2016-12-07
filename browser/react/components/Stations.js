@@ -17,10 +17,10 @@ export default function (props) {
       <h3>Stations</h3>
       <div className="list-group">
         {
-          Object.keys(props.stations).map(station => {
+          Object.keys(props.stations).map(genre => {
             return (
-              <div className="list-group-item" key={station}>
-                <Link to={'fill/me/in/later'}>{station}</Link>
+              <div className="list-group-item" key={genre}>
+                <Link to={`/stations/${genre}`}>{genre}</Link>
               </div>
             );
           })

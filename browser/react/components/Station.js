@@ -1,0 +1,18 @@
+import React from 'react';
+import Songs from './Songs';
+
+export default function (props) {
+
+  console.log("In Station, props: ",props);
+  const songs = props.songs;
+
+  return (
+    <div>
+      <h3>{ props.params.genre}</h3>
+      <Songs {...props} songs={songs}/>
+      { songs && !songs.length && <small>No songs.</small> }
+      <hr />
+    </div>
+  );
+
+}

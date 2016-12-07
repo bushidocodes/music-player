@@ -20,3 +20,12 @@ export const skip = (interval, {currentSongList, currentSong}) => {
   const next = currentSongList[idx];
   return [next, currentSongList];
 };
+
+export const generateStationsFromSongs = (songs) => {
+  let resultObj = {};
+  songs.forEach((song) => {
+    resultObj[song.genre] = resultObj[song.genre] || [];
+    resultObj[song.genre].push(song);
+  })
+  return resultObj;
+}

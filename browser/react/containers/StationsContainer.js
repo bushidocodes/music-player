@@ -1,5 +1,6 @@
 import {connect} from 'react-redux';
 import Stations from '../components/Stations';
+import { generateStationsFromSongs } from '../utils';
 
 function mapStateToProps(state){
   return {
@@ -8,15 +9,6 @@ function mapStateToProps(state){
 }
 function mapDispatchToProps(dispatch){
   return {};
-}
-
-function generateStationsFromSongs(songs) {
-  let resultObj = {};
-  songs.forEach((song) => {
-    resultObj[song.genre] = resultObj[song.genre] || [];
-    resultObj[song.genre].push(song);
-  })
-  return resultObj;
 }
 
 const ContainerCreator = connect(mapStateToProps, mapDispatchToProps);

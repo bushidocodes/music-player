@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, hashHistory, IndexRedirect } from 'react-router';
+import { Router, Route, hashHistory, IndexRedirect, IndexRoute } from 'react-router';
 import { Provider } from 'react-redux';
 
 import AlbumsContainer from './containers/AlbumsContainer';
@@ -15,6 +15,8 @@ import App from './components/App';
 import Albums from './components/Albums';
 import Songs from './components/Songs';
 import StationsContainer from './containers/StationsContainer';
+import StationContainer from './containers/StationContainer';
+import Station from './components/Station';
 
 import axios from 'axios';
 import store from './store';
@@ -51,6 +53,7 @@ const onPlaylistEnter = function (nextRouterState) {
   store.dispatch(getPlaylistById(playlistId));
 };
 const onStationsEnter = function () {
+  console.log("In onStationsEnter");
   store.dispatch(loadAllSongs());
 };
 
@@ -65,7 +68,10 @@ ReactDOM.render(
           <Route path="albums" component={Albums} />
           <Route path="songs" component={Songs} />
         </Route>
-        <Route path="/stations" component={StationsContainer} onEnter={onStationsEnter}/>
+        <Route path="/stations" onEnter={onStationsEnter}>
+          <Route path="/stations/:genre" component={StationContainer}  />
+          <IndexRoute component={StationsContainer}/>
+        </Route>
         <Route path="/new-playlist" component={NewPlaylistContainer} />
         <Route path="/playlists/:playlistId" component={PlaylistContainer} onEnter={onPlaylistEnter} />
         <Route path="/lyrics" component={LyricsContainer} />
