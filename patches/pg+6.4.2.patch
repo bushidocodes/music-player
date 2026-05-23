@@ -1,0 +1,16 @@
+diff --git a/node_modules/pg/lib/connection.js b/node_modules/pg/lib/connection.js
+index 0fb874c..39b9aaa 100644
+--- a/node_modules/pg/lib/connection.js
++++ b/node_modules/pg/lib/connection.js
+@@ -62,9 +62,9 @@ util.inherits(Connection, EventEmitter);
+ 
+ Connection.prototype.connect = function(port, host) {
+ 
+-  if(this.stream.readyState === 'closed') {
++  if(!this.stream.remoteAddress) {
+     this.stream.connect(port, host);
+-  } else if(this.stream.readyState == 'open') {
++  } else {
+     this.emit('connect');
+   }
+ 

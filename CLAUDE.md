@@ -5,13 +5,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm install          # Install dependencies
-npm run db-init      # Initialize PostgreSQL database
-npm run seed         # Seed database with iTunes library data
-npm start            # Start dev server (Webpack watch + Nodemon on port 1337)
-npm test             # Run server-side tests
-npm test:player      # Run browser/player tests
+npm install --legacy-peer-deps   # Install dependencies (flag required: redux@3/redux-thunk peer conflict)
+npm run seed                     # Seed database with music.xml / iTunes library data
+npm start                        # Start dev server (Webpack watch + Nodemon on port 1337)
+npm test                         # Run server-side tests
+npm run test:player              # Run browser/player tests
 ```
+
+On **Windows**, run `npm rebuild node-expat` after install (native addon ships non-Windows binary).
+
+PostgreSQL must be running with trust auth for local connections and a role matching your OS username. See README.md for setup steps.
 
 ## Architecture
 
@@ -34,3 +37,11 @@ npm test:player      # Run browser/player tests
 ### Build
 
 Webpack 1 bundles `browser/react/index.js` → `public/bundle.js`. Uses Babel with ES2015 + React presets for both client and server code.
+
+## Node 24 compatibility patches
+
+Three source-level fixes were applied to make this codebase run on Node 24 LTS:
+
+1. **`server/db/db.js`** — `native: false`: disables `pg-native`, whose `libpq` C addon has no prebuilt binary for Node 24's ABI (v137).
+2. **`patches/pg+6.4.2.patch`** — fixes `pg@6`'s `connection.js`: Node 24 changed `new net.Socket().readyState` from `'closed'` to `'open'`, causing `pg` to skip its TCP connect call and hang silently. The patch replaces the `readyState` check with `!stream.remoteAddress`. Applied automatically via `postinstall`.
+3. **`package.json` seed script** — points at `bin/iTunesSeed.js` directly (the `bin/seed` stub was broken).
