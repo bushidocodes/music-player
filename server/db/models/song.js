@@ -3,7 +3,7 @@
 const db = require('../db');
 const DataTypes = db.Sequelize;
 
-module.exports = db.define('song', {
+const Song = db.define('song', {
   name: {
     type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
     allowNull: false,
@@ -21,21 +21,22 @@ module.exports = db.define('song', {
 }, {
   defaultScope: {
     attributes: {
-      include: ['albumId'], // excluded by default, need for `song.getAlbum()`
+      include: ['albumId'],
     },
   },
   scopes: {
-    populated: () => ({ // function form lets us use to-be-defined models
+    populated: () => ({
       include: [{
         model: db.model('artist')
       }]
     })
   },
-  instanceMethods: {
-    toJSON: function () { // overriding toJSON to prevent url from leaking to client
-      const plain = this.get({plain: true});
-      delete plain.url;
-      return plain;
-    }
-  }
 });
+
+Song.prototype.toJSON = function () {
+  const plain = this.get({ plain: true });
+  delete plain.url;
+  return plain;
+};
+
+module.exports = Song;
