@@ -8,7 +8,7 @@ export default function (props) {
 
   return (
     <div>
-      <h3>{ props.params.genre}</h3>
+      <h3>{ props.genre}</h3>
       <Songs {...props} songs={songs}/>
       { songs && !songs.length && <small>No songs.</small> }
       <hr />

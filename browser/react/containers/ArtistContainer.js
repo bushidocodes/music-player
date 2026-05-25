@@ -30,8 +30,7 @@ export default class extends Component {
       <Artist
         {...this.state.player}
         selectedArtist={this.state.artists.selected}
-        toggleOne={this.toggle}
-        children={this.props.children.props.children} />
+        toggleOne={this.toggle} />
     );
   }
 

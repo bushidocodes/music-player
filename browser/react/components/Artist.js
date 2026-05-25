@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router';
+import { Link, Outlet } from 'react-router-dom';
 
 export default function (props) {
 
@@ -14,12 +14,7 @@ export default function (props) {
         <li><Link to={`/artists/${artist.id}/albums`}>ALBUMS</Link></li>
         <li><Link to={`/artists/${artist.id}/songs`}>SONGS</Link></li>
       </ul>
-      {
-        props.children && React.cloneElement(props.children, Object.assign({}, props, {
-          albums: albums,
-          songs: songs
-        }))
-      }
+      <Outlet context={{ albums, songs, currentSong: props.currentSong, isPlaying: props.isPlaying, toggleOne: props.toggleOne }} />
     </div>
   );
 

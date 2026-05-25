@@ -27,7 +27,7 @@ class FormContainer extends React.Component {
 
     evt.preventDefault();
 
-    store.dispatch(addNewPlaylist(this.state.inputValue));
+    store.dispatch(addNewPlaylist(this.state.inputValue, this.props.navigate));
 
     this.setState({
       inputValue: '',
