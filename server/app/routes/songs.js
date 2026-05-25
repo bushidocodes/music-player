@@ -38,26 +38,43 @@ router.get('/:songId', function (req, res) {
   res.json(req.song);
 });
 
+// Opens a URL as a readable stream, following HTTP redirects.
 function open(url) {
   const parsed = urlParse(url);
   if (parsed.protocol === 'file:') {
     return fs.createReadStream(decodeURIComponent(parsed.path));
   }
   const pass = new PassThrough();
-  const get = parsed.protocol === 'https:' ? https.get : http.get;
-  get(url, response => response.pipe(pass)).on('error', err => pass.destroy(err));
+  function fetch(currentUrl) {
+    const get = currentUrl.startsWith('https:') ? https.get : http.get;
+    get(currentUrl, response => {
+      const { statusCode, headers } = response;
+      if (statusCode >= 300 && statusCode < 400 && headers.location) {
+        response.resume(); // drain and discard the redirect body
+        fetch(headers.location);
+      } else {
+        response.pipe(pass);
+      }
+    }).on('error', err => pass.destroy(err));
+  }
+  fetch(url);
   return pass;
 }
 
 router.get('/:songId/image', function (req, res, next) {
-  mm.parseStream(open(req.song.url))
+  const stream = open(req.song.url);
+  mm.parseStream(stream, undefined, { duration: false })
     .then(metadata => {
+      stream.destroy(); // stop downloading once ID3 header is parsed
       const pic = metadata.common.picture?.[0];
       pic
         ? res.set('Content-Type', pic.format).send(Buffer.from(pic.data))
         : res.redirect('/default-album.jpg');
     })
-    .catch(next);
+    .catch(err => {
+      stream.destroy();
+      next(err);
+    });
 });
 
 router.get('/:songId/audio', function (req, res, next) {
