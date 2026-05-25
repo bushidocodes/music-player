@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.param('artistId', function (req, res, next, id) {
-  Artist.findById(id)
+  Artist.findByPk(id)
   .then(artist => {
     if (!artist) {
       const err = Error('Artist not found');

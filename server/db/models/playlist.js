@@ -4,7 +4,7 @@ const db = require('../db');
 const DataTypes = db.Sequelize;
 const unique = require('./plugins/unique-through');
 
-module.exports = db.define('playlist', {
+const Playlist = db.define('playlist', {
 
   name: {
     type: DataTypes.STRING,
@@ -18,22 +18,23 @@ module.exports = db.define('playlist', {
 }, {
 
   scopes: {
-    populated: () => ({ // function form lets us refer to undefined models
+    populated: () => ({
       include: [{
         model: db.model('song').scope('defaultScope', 'populated')
       }]
     })
-  },
-  instanceMethods: {
-    addAndReturnSong: function (songId) { // `addSong` doesn't promise a song.
-      songId = String(songId);
-      const addedToList = this.addSong(songId);
-      const songFromDb = db.model('song')
-      .scope('defaultScope', 'populated')
-      .findById(songId);
-      return DataTypes.Promise.all([addedToList, songFromDb])
-      .spread((result, song) => song);
-    }
   }
 
 });
+
+Playlist.prototype.addAndReturnSong = function (songId) {
+  songId = String(songId);
+  const addedToList = this.addSong(songId);
+  const songFromDb = db.model('song')
+    .scope('defaultScope', 'populated')
+    .findByPk(songId);
+  return Promise.all([addedToList, songFromDb])
+    .then(([result, song]) => song);
+};
+
+module.exports = Playlist;

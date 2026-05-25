@@ -14,7 +14,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.param('albumId', function (req, res, next, id) {
-  Album.scope('defaultScope', 'populated').findById(id)
+  Album.scope('defaultScope', 'populated').findByPk(id)
   .then(function (album) {
     if (!album) {
       const err = Error('Album not found');

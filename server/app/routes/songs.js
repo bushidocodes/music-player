@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.param('songId', function (req, res, next, id) {
-  Song.scope('defaultScope', 'populated').findById(id)
+  Song.scope('defaultScope', 'populated').findByPk(id)
   .then(song => {
     if (!song) {
       const err = Error('Song not found');

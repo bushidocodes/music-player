@@ -19,7 +19,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.param('playlistId', function (req, res, next, id) {
-  Playlist.scope('populated').findById(id)
+  Playlist.scope('populated').findByPk(id)
   .then(playlist => {
     if (!playlist) {
       const err = Error('Playlist not found');
