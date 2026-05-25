@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers/root-reducer';
-import createLogger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 
 const logger = createLogger({ collapsed: true });
 
