@@ -17,7 +17,7 @@ const KEY = Symbol('key')
 const TRACKS = Symbol('TRACKS')
 const DEFAULT_TRACK_LIMIT = 500
 
-const program = require('commander')
+const { program } = require('commander')
 
 program
   .usage('[options] [iTunes Music Library.xml...]')
@@ -43,6 +43,7 @@ function checkItunes () {
 
 function main() {
   program.parse(process.argv)
+  const opts = program.opts()
 
   status[TRACKS] = {
     total: status.addItem('total', {color: 'magenta'}),
@@ -52,13 +53,13 @@ function main() {
   }
   status.start({ label: 'XML tracks', invert: false, interval: 125 })
 
-  program[TRACKS] = program.unlimited ? Infinity : program.limit || DEFAULT_TRACK_LIMIT;
+  program[TRACKS] = opts.unlimited ? Infinity : opts.limit || DEFAULT_TRACK_LIMIT;
 
-  Promise.all([db.sync({ force: program.force }), checkItunes()])
+  Promise.all([db.sync({ force: opts.force }), checkItunes()])
     .spread((tablesAreReady, xmlPath) => {
       const imported = program.args.concat(
         path.resolve(__dirname, '..', 'music.xml'),
-        program.itunes && xmlPath
+        opts.itunes && xmlPath
       ).map(importLibrary)
       return Promise.all(imported)
     })
