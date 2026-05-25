@@ -1,4 +1,4 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from '@reduxjs/toolkit';
 import lyricsReducer from './lyrics-reducer';
 import playerReducer from './player-reducer';
 import artistsReducer from './artists-reducer';
