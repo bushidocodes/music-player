@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Router, Route, hashHistory, IndexRedirect, IndexRoute } from 'react-router';
 import { Provider } from 'react-redux';
 
@@ -57,7 +57,7 @@ const onStationsEnter = function () {
   store.dispatch(loadAllSongs());
 };
 
-ReactDOM.render(
+createRoot(document.getElementById('app')).render(
   <Provider store={store}>
     <Router history={hashHistory}>
       <Route path="/" component={App} onEnter={onAppEnter}>
@@ -78,6 +78,5 @@ ReactDOM.render(
         <IndexRedirect to="/albums" />
       </Route>
     </Router>
-  </Provider>,
-  document.getElementById('app')
+  </Provider>
 );
