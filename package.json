@@ -27,7 +27,7 @@
     "express": "^4.21.0",
     "fs-misc": "^2.0.0",
     "itunes-library-stream": "^0.0.0",
-    "lodash": "^4.15.0",
+    "lodash": "^4.18.1",
 
     "music-metadata": "^10.0.0",
     "node-status": "^0.1.7",
@@ -42,14 +42,14 @@
     "redux-logger": "^3.0.0",
 
     "sequelize": "^6.37.5",
-    "serve-favicon": "^2.2.0",
+    "serve-favicon": "^2.5.1",
     "userhome": "^1.0.0",
     "volleyball": "^1.5.1",
     "html-webpack-plugin": "^5.6.3",
     "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.1",
-    "xml2json": "^0.10.0"
+    "xml2json": "^0.12.0"
   },
   "devDependencies": {
     "chai": "^5.1.2",
