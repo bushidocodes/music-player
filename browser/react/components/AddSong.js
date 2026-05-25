@@ -9,14 +9,14 @@ export default function (props) {
   const handleSubmit = props.handleSubmit;
 
   return (
-    <div className="well">
-      <form className="form-horizontal" noValidate name="songSelect" onSubmit={handleSubmit}>
+    <div className="p-3 border rounded">
+      <form noValidate name="songSelect" onSubmit={handleSubmit}>
         <fieldset>
           <legend>Add to Playlist</legend>
           { error && <div className="alert alert-danger">Song is a duplicate</div> }
-          <div className="form-group">
-            <label htmlFor="song" className="col-xs-2 control-label">Song</label>
-            <div className="col-xs-10">
+          <div className="mb-3 row">
+            <label htmlFor="song" className="col-2 col-form-label">Song</label>
+            <div className="col-10">
               <select
                 className="form-control"
                 name="song"
@@ -30,8 +30,8 @@ export default function (props) {
               </select>
             </div>
           </div>
-          <div className="form-group">
-            <div className="col-xs-10 col-xs-offset-2">
+          <div className="mb-3 row">
+            <div className="col-10 offset-2">
               <button type="submit" className="btn btn-success">Add Song</button>
             </div>
           </div>

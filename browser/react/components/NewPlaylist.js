@@ -8,14 +8,14 @@ export default function (props) {
   const inputValue = props.inputValue;
 
   return (
-    <div className="well" style={{marginTop: '20px'}}>
-      <form className="form-horizontal" onSubmit={handleSubmit}>
+    <div className="p-3 border rounded" style={{marginTop: '20px'}}>
+      <form onSubmit={handleSubmit}>
         <fieldset>
           <legend>New Playlist</legend>
           { warning && <div className="alert alert-warning">{warning}</div> }
-          <div className="form-group">
-            <label className="col-xs-2 control-label">Name</label>
-            <div className="col-xs-10">
+          <div className="mb-3 row">
+            <label className="col-2 col-form-label">Name</label>
+            <div className="col-10">
               <input
                 className="form-control"
                 type="text"
@@ -24,8 +24,8 @@ export default function (props) {
               />
             </div>
           </div>
-          <div className="form-group">
-            <div className="col-xs-10 col-xs-offset-2">
+          <div className="mb-3 row">
+            <div className="col-10 offset-2">
               <button
                 type="submit"
                 className="btn btn-success"

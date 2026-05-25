@@ -32,12 +32,10 @@ module.exports = {
   devServer: {
     port: 3000,
     hot: true,
-    // CSS files (bootstrap-dark.css, style.css) live in browser/
     static: { directory: path.join(__dirname, 'browser') },
     proxy: [
       {
-        // API calls and Bootstrap CSS (served from node_modules by Express)
-        context: ['/api', '/bootstrap', '/favicon.ico'],
+        context: ['/api', '/bootstrap', '/bootstrap-icons', '/favicon.ico'],
         target: 'http://localhost:1337',
       },
     ],
