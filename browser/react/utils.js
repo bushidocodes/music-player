@@ -1,6 +1,5 @@
 export const convertSong = (song) => {
-  song.audioUrl = `/api/songs/${song.id}/audio`;
-  return song;
+  return { ...song, audioUrl: `/api/songs/${song.id}/audio` };
 };
 
 export const convertAlbum = (album) => {
