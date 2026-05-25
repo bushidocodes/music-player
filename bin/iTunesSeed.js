@@ -12,7 +12,13 @@ const db = require('../server/db/db')
 require('../server/db/models') // Init the relations
 const log = require('./log')
 
-const Promise = db.Promise
+// Polyfill for Bluebird's Promise.props(): resolves an object's promise values.
+function promiseProps(obj) {
+  const keys = Object.keys(obj)
+  return Promise.all(keys.map(k => obj[k]))
+    .then(vals => Object.fromEntries(keys.map((k, i) => [k, vals[i]])))
+}
+
 const KEY = Symbol('key')
 const TRACKS = Symbol('TRACKS')
 const DEFAULT_TRACK_LIMIT = 500
@@ -56,17 +62,16 @@ function main() {
   program[TRACKS] = opts.unlimited ? Infinity : opts.limit || DEFAULT_TRACK_LIMIT;
 
   Promise.all([db.sync({ force: opts.force }), checkItunes()])
-    .spread((tablesAreReady, xmlPath) => {
+    .then(([tablesAreReady, xmlPath]) => {
       const imported = program.args.concat(
         path.resolve(__dirname, '..', 'music.xml'),
         opts.itunes && xmlPath
       ).map(importLibrary)
       return Promise.all(imported)
     })
-    .finally(allDone => {
+    .finally(() => {
       status.stop()
       db.close() // else Sequelize keeps open ~10 secs, anticipating queries
-      return null // silence Bluebird re: promise made in but not returned from db.close
     })
 }
 
@@ -154,8 +159,7 @@ const Results = ['artists', 'albums', 'songs', 'artistSong']
              }
              const pKeyExpr = (findOrCreate.primaryKey || ['id']).map(k => `"${k}"`).join(',')
              var keys, values
-             let self = findOrCreate[key] = Promise
-                 .props(columnValues)
+             let self = findOrCreate[key] = promiseProps(columnValues)
                  .then(cols => {
                    keys = Object.keys(cols)
                    values = keys.map(k => cols[k])
@@ -172,7 +176,7 @@ const Results = ['artists', 'albums', 'songs', 'artistSong']
                                  VALUES (${keys.map(v => '?')}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                                  RETURNING ${pKeyExpr}`, {
                                    replacements: values,
-                                   type: 'INSERT'
+                                   type: 'SELECT' // RETURNING makes this a SELECT-like result; Sequelize v6 'INSERT' wraps as [rows, rowCount] which breaks results[0].id
                                  }))
                  .then(results => (++findOrCreate.created, results[0].id))
                  .catch(err => {
