@@ -5,7 +5,7 @@
   "main": "server/start.js",
   "scripts": {
     "start": "webpack -w & nodemon --watch server -e js,html server/start.js",
-    "test": "./node_modules/.bin/mocha server/**/*.test.js --reporter spec",
+    "test": "mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
     "seed": "node ./bin/iTunesSeed.js",
     "db-init": "pg-init juke",
@@ -48,9 +48,8 @@
     "xml2json": "^0.10.0"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "chai-spies": "0.7.1",
-    "mocha": "^2.5.1",
+    "chai": "^5.1.2",
+    "mocha": "^10.8.2",
     "testem": "1.2.2"
   }
 }

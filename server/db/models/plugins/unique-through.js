@@ -11,9 +11,9 @@ describe('unique (deep: String) through (near: String)', ()=>{
   const def = unique('artists').through('songs')
 
   it('provides a Sequelize virtual column definition', ()=>{
-    expect(def).to.be.a.object
+    expect(def).to.be.an('object')
     expect(def.type).to.equal(Sequelize.VIRTUAL)
-    expect(def.get).to.be.a.function
+    expect(def.get).to.be.a('function')
   })
 
   describe('defines a getter', ()=>{
