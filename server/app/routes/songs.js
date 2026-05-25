@@ -5,9 +5,11 @@ const router = express.Router();
 const mime = require('mime');
 const chalk = require('chalk');
 const urlParse = require('url').parse;
+const http = require('http');
+const https = require('https');
+const { PassThrough } = require('stream');
 const models = require('../../db/models');
 const Song = models.Song;
-const request = require('request');
 const musicMetadata = require('musicmetadata')
 const fs = require('fs')
 
@@ -39,10 +41,14 @@ router.get('/:songId', function (req, res) {
 });
 
 function open(url) {
-  const parsed = urlParse(url)
-  return parsed.protocol === 'file:'?
-    fs.createReadStream(decodeURIComponent(parsed.path))
-    : request(url)
+  const parsed = urlParse(url);
+  if (parsed.protocol === 'file:') {
+    return fs.createReadStream(decodeURIComponent(parsed.path));
+  }
+  const pass = new PassThrough();
+  const get = parsed.protocol === 'https:' ? https.get : http.get;
+  get(url, response => response.pipe(pass)).on('error', err => pass.destroy(err));
+  return pass;
 }
 
 router.get('/:songId/image', function (req, res, next) {
@@ -62,4 +68,3 @@ router.get('/:songId/audio', function (req, res, next) {
     res.sendFile(decodeURIComponent(url.path))
     : res.redirect(req.song.url)
 });
-
