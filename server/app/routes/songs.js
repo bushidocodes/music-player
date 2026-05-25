@@ -2,15 +2,13 @@
 
 const express = require('express');
 const router = express.Router();
-const mime = require('mime');
-const chalk = require('chalk');
 const urlParse = require('url').parse;
 const http = require('http');
 const https = require('https');
 const { PassThrough } = require('stream');
 const models = require('../../db/models');
 const Song = models.Song;
-const musicMetadata = require('musicmetadata')
+const mm = require('music-metadata');
 const fs = require('fs')
 
 module.exports = router;
@@ -52,14 +50,14 @@ function open(url) {
 }
 
 router.get('/:songId/image', function (req, res, next) {
-  musicMetadata(open(req.song.url), function (err, metadata) {
-    if (err) { return next(err) }
-    const pic = metadata.picture[0]
-    pic? res
-      .set('Content-Type', mime.lookup(pic.format))
-      .send(pic.data)
-      : res.redirect('/default-album.jpg')
-  })
+  mm.parseStream(open(req.song.url))
+    .then(metadata => {
+      const pic = metadata.common.picture?.[0];
+      pic
+        ? res.set('Content-Type', pic.format).send(Buffer.from(pic.data))
+        : res.redirect('/default-album.jpg');
+    })
+    .catch(next);
 });
 
 router.get('/:songId/audio', function (req, res, next) {
