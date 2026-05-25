@@ -11,11 +11,11 @@ export default function (props) {
       <div className="row">
         {
           albums && albums.map(album => (
-            <div className="col-xs-4" key={ album.id }>
-              <Link className="thumbnail" to={`/albums/${album.id}`}>
-                <img src={ album.imageUrl }/>
-                <div className="caption">
-                  <h5>
+            <div className="col-4 mb-4" key={ album.id }>
+              <Link className="card text-decoration-none" to={`/albums/${album.id}`}>
+                <img src={ album.imageUrl } className="card-img-top"/>
+                <div className="card-body">
+                  <h5 className="card-title">
                     <span>{ album.name }</span>
                   </h5>
                   <small>{ album.songs.length } songs</small>

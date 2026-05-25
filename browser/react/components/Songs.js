@@ -22,8 +22,8 @@ export default function (props) {
           songs && songs.map(song => (
             <tr key={song.id}>
               <td>
-                <button className="btn btn-default btn-xs" onClick={() => toggle(song, songs)}>
-                  <span className={song.id === currentSong.id && isPlaying ? "glyphicon glyphicon-pause" : "glyphicon glyphicon-play"}></span>
+                <button className="btn btn-secondary btn-sm" onClick={() => toggle(song, songs)}>
+                  <span className={song.id === currentSong.id && isPlaying ? "bi bi-pause-fill" : "bi bi-play-fill"}></span>
                 </button>
               </td>
               <td>{ song.name }</td>

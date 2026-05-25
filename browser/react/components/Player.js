@@ -12,15 +12,15 @@ export default function (props) {
   return (
     <footer>
       <div style={!currentSong.id ? {display: 'none'} : null}>
-        <div className="pull-left">
-          <button className="btn btn-default" onClick={prev}>
-            <span className="glyphicon glyphicon-step-backward"></span>
+        <div className="float-start">
+          <button className="btn btn-secondary" onClick={prev}>
+            <span className="bi bi-skip-backward-fill"></span>
           </button>
-          <button className="btn btn-default" onClick={toggle}>
-            <span className={isPlaying ? 'glyphicon glyphicon-pause' : 'glyphicon glyphicon-play'}></span>
+          <button className="btn btn-secondary" onClick={toggle}>
+            <span className={isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'}></span>
           </button>
-          <button className="btn btn-default" onClick={next}>
-            <span className="glyphicon glyphicon-step-forward"></span>
+          <button className="btn btn-secondary" onClick={next}>
+            <span className="bi bi-skip-forward-fill"></span>
           </button>
         </div>
         <div className="bar">

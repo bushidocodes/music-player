@@ -7,11 +7,13 @@ import PlayerContainer from '../containers/PlayerContainer';
 export default function () {
   return (
     <div id="main" className="container-fluid">
-      <div className="col-xs-2">
-        <SidebarContainer />
-      </div>
-      <div className="col-xs-10">
-        <Outlet />
+      <div className="row">
+        <div className="col-2">
+          <SidebarContainer />
+        </div>
+        <div className="col-10">
+          <Outlet />
+        </div>
       </div>
       <PlayerContainer />
     </div>

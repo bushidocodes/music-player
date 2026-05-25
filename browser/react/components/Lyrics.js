@@ -13,9 +13,9 @@ export default function (props) {
   return (
     <div style={{marginTop: '20px'}}>
       <form onSubmit={handleSubmit}>
-        <div className="form-group row">
-          <div className="col-md-6 col-xs-12">
-            <label className="col-xs-2 control-label">Artist</label>
+        <div className="mb-3 row">
+          <div className="col-md-6 col-12">
+            <label className="form-label">Artist</label>
             <input
               className="form-control"
               type="text"
@@ -24,8 +24,8 @@ export default function (props) {
               onChange={artistChange}
             />
           </div>
-          <div className="col-md-6 col-xs-12">
-            <label className="col-xs-2 control-label">Song</label>
+          <div className="col-md-6 col-12">
+            <label className="form-label">Song</label>
             <input
               className="form-control"
               type="text"
