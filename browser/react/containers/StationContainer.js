@@ -10,8 +10,8 @@ function mapStateToProps(state, ownProps){
   console.log("In mapStateToProps, state: ",state);
   console.log("In mapStateToProps, ownProps: ",ownProps);
   return {
-    genre: ownProps.params.genre,
-    songs: (generateStationsFromSongs(state.songs)[ownProps.params.genre]||[]).map(song => convertSong(song)),
+    genre: ownProps.genre,
+    songs: (generateStationsFromSongs(state.songs)[ownProps.genre]||[]).map(song => convertSong(song)),
     currentSong: state.player.currentSong,
     isPlaying: state.player.isPlaying
   };

@@ -6,7 +6,6 @@ import {
 
 import axios from 'axios';
 
-import {hashHistory} from 'react-router';
 import {convertSong} from '../utils';
 
 export const receivePlaylists = playlists => ({
@@ -35,7 +34,7 @@ export const getPlaylistById = playlistId => {
 
 };
 
-export const addNewPlaylist = playlistName => {
+export const addNewPlaylist = (playlistName, navigate) => {
 
   return (dispatch, getState) => {
 
@@ -44,7 +43,7 @@ export const addNewPlaylist = playlistName => {
       .then(playlist => {
         const newListOfPlaylists = getState().playlists.list.concat([playlist]);
         dispatch(receivePlaylists(newListOfPlaylists));
-        hashHistory.push(`/playlists/${playlist.id}`)
+        navigate(`/playlists/${playlist.id}`);
       });
 
   };
