@@ -7,7 +7,7 @@ const Artist = models.Artist;
 module.exports = router;
 
 router.get('/', function (req, res, next) {
-  Artist.findAll({ where: req.query })
+  Artist.findAll()
   .then(artists => res.json(artists))
   .catch(next);
 });

@@ -7,7 +7,7 @@ const Album = models.Album;
 module.exports = router;
 
 router.get('/', function (req, res, next) {
-  Album.scope('defaultScope', 'songIds').findAll({ where: req.query })
+  Album.scope('defaultScope', 'songIds').findAll()
   .then(albums => res.json(albums))
   .catch(next);
 });

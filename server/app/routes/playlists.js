@@ -7,7 +7,7 @@ const Playlist = models.Playlist;
 module.exports = router;
 
 router.get('/', function (req, res, next) {
-  Playlist.findAll({ where: req.query })
+  Playlist.findAll()
   .then(playlists => res.json(playlists))
   .catch(next);
 });
