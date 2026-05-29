@@ -1,16 +1,16 @@
 const express = require('express');
 const router = new express.Router();
 const axios = require('axios');
-const parser = require('xml2json');
 module.exports = router;
 
-const lyricsAPIPrefix = 'http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect';
+const lyricsAPIPrefix = 'https://api.lyrics.ovh/v1';
 
 router.get('/:artist/:song', (req, res, next) => {
-  axios.get(`${lyricsAPIPrefix}?artist=${req.params.artist}&song=${req.params.song}`)
+  const url = `${lyricsAPIPrefix}/${encodeURIComponent(req.params.artist)}/${encodeURIComponent(req.params.song)}`;
+  axios.get(url)
     .then(response => {
-      const lyric = parser.toJson(response.data, {object: true}).GetLyricResult.Lyric;
-      res.send({lyric});
+      const lyric = response.data?.lyrics ?? null;
+      res.send({ lyric });
     })
     .catch(next);
 });
