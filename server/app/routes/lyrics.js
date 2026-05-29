@@ -4,12 +4,14 @@ const axios = require('axios');
 const parser = require('xml2json');
 module.exports = router;
 
-const lyricsAPIPrefix = 'http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect';
+const lyricsAPIPrefix = 'https://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect';
 
 router.get('/:artist/:song', (req, res, next) => {
-  axios.get(`${lyricsAPIPrefix}?artist=${req.params.artist}&song=${req.params.song}`)
+  const url = `${lyricsAPIPrefix}?artist=${encodeURIComponent(req.params.artist)}&song=${encodeURIComponent(req.params.song)}`;
+  axios.get(url)
     .then(response => {
-      const lyric = parser.toJson(response.data, {object: true}).GetLyricResult.Lyric;
+      const result = parser.toJson(response.data, {object: true});
+      const lyric = result && result.GetLyricResult ? result.GetLyricResult.Lyric : null;
       res.send({lyric});
     })
     .catch(next);
