@@ -19,15 +19,9 @@ psql -U postgres -c "CREATE ROLE <your-username> WITH LOGIN SUPERUSER;"
 ## Setup
 
 ```bash
-npm install --legacy-peer-deps   # peer-dep conflict requires this flag (see below)
-npm run seed                     # seed DB from music.xml (or your iTunes library)
-npm start                        # webpack watch + nodemon on port 1337
-```
-
-On **Windows**, rebuild the native XML addon after install:
-
-```bash
-npm rebuild node-expat
+npm install      # install dependencies
+npm run seed     # seed DB from music.xml (or your iTunes library)
+npm start        # webpack watch + nodemon on port 1337
 ```
 
 ## Commands
@@ -43,14 +37,4 @@ npm rebuild node-expat
 
 ## Node 24 compatibility
 
-This codebase was written against Node 6–8 era dependencies. The following issues were identified and fixed to run on Node 24 LTS:
-
-| Issue | Fix | File |
-|-------|-----|------|
-| `redux-thunk@2.4.2` requires `redux@^4` but project uses `redux@3` | `npm install --legacy-peer-deps` | — |
-| `pg-native` (`libpq`) has no prebuilt binary for Node 24 ABI | `native: false` in Sequelize config | `server/db/db.js` |
-| `pg@6.x`: Node 24 changed `new net.Socket().readyState` from `'closed'` to `'open'`, causing `pg` to skip the TCP connect call and hang forever | One-line patch via `patch-package` | `patches/pg+6.4.2.patch` |
-| `node-expat` shipped a non-Windows binary | `npm rebuild node-expat` | — |
-| `npm run seed` pointed at a broken `bin/seed` stub | Fixed script to point at `bin/iTunesSeed.js` | `package.json` |
-
-The `pg` patch is automatically applied by `postinstall` and survives `npm install` reruns.
+Dependencies have been updated to modern versions (`pg@8`, `@reduxjs/toolkit`, `react-router-dom@6`, `webpack@5`) that run on Node 24 LTS without patches or workarounds. A plain `npm install` is sufficient.
