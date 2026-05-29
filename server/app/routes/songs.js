@@ -14,7 +14,7 @@ const fs = require('fs')
 module.exports = router;
 
 router.get('/', function (req, res, next) {
-  Song.scope('defaultScope', 'populated').findAll({ where: req.query })
+  Song.scope('defaultScope', 'populated').findAll()
   .then(songs => res.json(songs))
   .catch(next);
 });
