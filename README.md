@@ -19,9 +19,10 @@ psql -U postgres -c "CREATE ROLE <your-username> WITH LOGIN SUPERUSER;"
 ## Setup
 
 ```bash
-npm install      # install dependencies
-npm run seed     # seed DB from music.xml (or your iTunes library)
-npm start        # webpack watch + nodemon on port 1337
+npm install          # install dependencies
+npm run db-init      # create the juke PostgreSQL database (one-time)
+npm run seed         # seed DB from music.xml (or your iTunes library)
+npm start            # webpack watch + nodemon on port 1337
 ```
 
 ## Commands
@@ -29,6 +30,7 @@ npm start        # webpack watch + nodemon on port 1337
 | Command | Description |
 |---------|-------------|
 | `npm start` | Webpack watch + Nodemon dev server on port 1337 |
+| `npm run db-init` | Create the juke PostgreSQL database (one-time setup) |
 | `npm run seed` | Seed database from `music.xml` / iTunes library |
 | `npm run seed -- --force` | Re-seed, dropping existing data |
 | `npm run seed -- --unlimited` | Import full iTunes library (default cap: 500 tracks) |
@@ -37,4 +39,4 @@ npm start        # webpack watch + nodemon on port 1337
 
 ## Node 24 compatibility
 
-Dependencies have been updated to modern versions (`pg@8`, `@reduxjs/toolkit`, `react-router-dom@6`, `webpack@5`) that run on Node 24 LTS without patches or workarounds. A plain `npm install` is sufficient.
+Dependencies have been updated to modern versions (`pg@8`, `@reduxjs/toolkit`, `react-router-dom@6`, `webpack@5`) that run on Node 24 LTS without patches or workarounds.
