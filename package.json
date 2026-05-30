@@ -9,8 +9,7 @@
     "test": "mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
     "seed": "node ./bin/iTunesSeed.js",
-    "db-init": "pg-init juke",
-    "postinstall": "npm run db-init"
+    "db-init": "pg-init juke"
   },
   "dependencies": {
     "@babel/core": "^7.26.0",
