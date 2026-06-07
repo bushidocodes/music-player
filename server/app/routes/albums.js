@@ -32,7 +32,12 @@ router.get('/:albumId', function (req, res) {
 });
 
 router.get('/:albumId/image', function (req, res, next) {
-  res.redirect(`/api/songs/${req.album.songs[0].id}/image`)
+  if (!req.album.songs || req.album.songs.length === 0) {
+    const err = new Error('Album has no songs');
+    err.status = 404;
+    return next(err);
+  }
+  res.redirect(`/api/songs/${req.album.songs[0].id}/image`);
 });
 
 router.get('/:albumId/songs/', function (req, res) {
