@@ -25,9 +25,4 @@ Playlist.belongsToMany(Song, { through: 'playlistSong' });
 
 // exported just in case, but can also be fetched via db.model('Album') etc.
 
-module.exports = {
-  Album: Album,
-  Song: Song,
-  Artist: Artist,
-  Playlist: Playlist
-};
+module.exports = { Album, Song, Artist, Playlist };

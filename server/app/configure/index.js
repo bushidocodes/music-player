@@ -1,16 +1,13 @@
 'use strict';
 /* eslint-disable global-require */
 
-module.exports = function (app) {
+module.exports = (app) => {
 
   // setValue and getValue are merely alias
   // for app.set and app.get used in the less
   // common way of setting application variables.
   app.setValue = app.set.bind(app);
-
-  app.getValue = function (path) {
-      return app.get(path);
-  };
+  app.getValue = (key) => app.get(key);
 
   require('./app-variables')(app);
 
