@@ -3,7 +3,6 @@ import Songs from './Songs';
 
 export default function (props) {
 
-  console.log("In Station, props: ",props);
   const songs = props.songs;
 
   return (

@@ -13,7 +13,13 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-  Playlist.create(req.body)
+  const name = req.body && req.body.name && String(req.body.name).trim();
+  if (!name) {
+    const err = new Error('name is required and must be a non-empty string');
+    err.status = 400;
+    return next(err);
+  }
+  Playlist.create({ name })
   .then(playlist => res.status(201).json(playlist))
   .catch(next);
 });
@@ -38,7 +44,13 @@ router.get('/:playlistId', function (req, res) {
 });
 
 router.put('/:playlistId', function (req, res, next) {
-  req.playlist.update(req.body)
+  const name = req.body && req.body.name && String(req.body.name).trim();
+  if (!name) {
+    const err = new Error('name is required and must be a non-empty string');
+    err.status = 400;
+    return next(err);
+  }
+  req.playlist.update({ name })
   .then(playlist => res.status(200).json(playlist))
   .catch(next);
 });
