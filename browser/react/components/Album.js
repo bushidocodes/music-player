@@ -12,7 +12,7 @@ export default function (props) {
     <div className="album">
       <div>
         <h3>{ album.name }</h3>
-        <img src={ album.imageUrl } className="img-thumbnail"/>
+        <img src={ album.imageUrl } alt={ album.name } className="img-thumbnail"/>
       </div>
       <Songs
         songs={album.songs}

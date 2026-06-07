@@ -15,35 +15,26 @@ export const initialPlayerState = {
 
 export default function (state = initialPlayerState, action) {
 
-  const newState = Object.assign({}, state);
-
   switch (action.type) {
 
     case SET_CURRENT_SONG:
-      newState.currentSong = action.song;
-      break;
+      return { ...state, currentSong: action.song };
 
     case SET_LIST:
-      newState.currentSongList = action.songList;
-      break;
+      return { ...state, currentSongList: action.songList };
 
     case START_PLAYING:
-      newState.isPlaying = true;
-      break;
+      return { ...state, isPlaying: true };
 
     case STOP_PLAYING:
-      newState.isPlaying = false;
-      break;
+      return { ...state, isPlaying: false };
 
     case SET_PROGRESS:
-      newState.progress = action.progress;
-      break;
+      return { ...state, progress: action.progress };
 
     default:
       return state;
 
   }
-
-  return newState;
 
 }

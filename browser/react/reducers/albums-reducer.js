@@ -12,23 +12,17 @@ const initialAlbumsState = {
 
 export default function (state = initialAlbumsState, action) {
 
-  const newState = Object.assign({}, state);
-
   switch (action.type) {
 
     case RECEIVE_ALBUMS:
-      newState.list = convertAlbums(action.albums);
-      break;
+      return { ...state, list: convertAlbums(action.albums) };
 
     case RECEIVE_ALBUM:
-      newState.selected = convertAlbum(action.album);
-      break;
+      return { ...state, selected: convertAlbum(action.album) };
 
     default:
       return state;
 
   }
-
-  return newState;
 
 }

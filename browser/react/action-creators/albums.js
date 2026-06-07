@@ -11,12 +11,11 @@ export const receiveAlbum = album => ({
     album
 });
 
-export const getAlbumById = albumId => {
-  return dispatch => {
-    axios.get(`/api/albums/${albumId}`)
-      .then(response => {
-        dispatch(receiveAlbum(response.data));
-      })
-      .catch(err => console.error('Failed to load album:', err));
-  };
+export const getAlbumById = albumId => async dispatch => {
+  try {
+    const { data } = await axios.get(`/api/albums/${albumId}`);
+    dispatch(receiveAlbum(data));
+  } catch (err) {
+    console.error('Failed to load album:', err);
+  }
 };

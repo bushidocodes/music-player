@@ -13,18 +13,15 @@ export const receiveArtist = (artist, albums, songs) => ({
   albums
 });
 
-export const getArtistById = artistId => {
-  return dispatch => {
-    Promise
-      .all([
-        axios.get(`/api/artists/${artistId}`),
-        axios.get(`/api/artists/${artistId}/albums`),
-        axios.get(`/api/artists/${artistId}/songs`)
-      ])
-      .then(results => results.map(r => r.data))
-      .then(results => {
-        dispatch(receiveArtist(...results));
-      })
-      .catch(err => console.error('Failed to load artist:', err));
-  };
+export const getArtistById = artistId => async dispatch => {
+  try {
+    const [artistRes, albumsRes, songsRes] = await Promise.all([
+      axios.get(`/api/artists/${artistId}`),
+      axios.get(`/api/artists/${artistId}/albums`),
+      axios.get(`/api/artists/${artistId}/songs`),
+    ]);
+    dispatch(receiveArtist(artistRes.data, albumsRes.data, songsRes.data));
+  } catch (err) {
+    console.error('Failed to load artist:', err);
+  }
 };
