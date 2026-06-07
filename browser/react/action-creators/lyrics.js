@@ -11,6 +11,7 @@ export const searchLyrics = (artist, song) => {
     axios.get(`/api/lyrics/${artist}/${song}`)
       .then(res => {
         dispatch(setLyrics(res.data.lyric));
-      });
+      })
+      .catch(err => console.error('Failed to load lyrics:', err));
   };
 };
