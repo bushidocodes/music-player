@@ -28,18 +28,21 @@ import { receivePlaylists, getPlaylistById, loadAllSongs } from './action-creato
 
 function AppWrapper() {
   useEffect(() => {
-    Promise.all([
-      axios.get('/api/albums'),
-      axios.get('/api/artists'),
-      axios.get('/api/playlists'),
-    ])
-      .then(responses => responses.map(r => r.data))
-      .then(([albums, artists, playlists]) => {
-        store.dispatch(receiveAlbums(albums));
-        store.dispatch(receiveArtists(artists));
-        store.dispatch(receivePlaylists(playlists));
-      })
-      .catch(err => console.error('Failed to load app data:', err));
+    async function loadInitialData() {
+      try {
+        const [albumsRes, artistsRes, playlistsRes] = await Promise.all([
+          axios.get('/api/albums'),
+          axios.get('/api/artists'),
+          axios.get('/api/playlists'),
+        ]);
+        store.dispatch(receiveAlbums(albumsRes.data));
+        store.dispatch(receiveArtists(artistsRes.data));
+        store.dispatch(receivePlaylists(playlistsRes.data));
+      } catch (err) {
+        console.error('Failed to load app data:', err);
+      }
+    }
+    loadInitialData();
   }, []);
   return <App />;
 }

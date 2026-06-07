@@ -6,12 +6,11 @@ export const setLyrics = text => ({
   text
 });
 
-export const searchLyrics = (artist, song) => {
-  return dispatch => {
-    axios.get(`/api/lyrics/${artist}/${song}`)
-      .then(res => {
-        dispatch(setLyrics(res.data.lyric));
-      })
-      .catch(err => console.error('Failed to load lyrics:', err));
-  };
+export const searchLyrics = (artist, song) => async dispatch => {
+  try {
+    const { data } = await axios.get(`/api/lyrics/${artist}/${song}`);
+    dispatch(setLyrics(data.lyric));
+  } catch (err) {
+    console.error('Failed to load lyrics:', err);
+  }
 };

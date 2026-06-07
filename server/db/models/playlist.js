@@ -27,14 +27,13 @@ const Playlist = db.define('playlist', {
 
 });
 
-Playlist.prototype.addAndReturnSong = function (songId) {
+Playlist.prototype.addAndReturnSong = async function (songId) {
   songId = String(songId);
-  const addedToList = this.addSong(songId);
-  const songFromDb = db.model('song')
-    .scope('defaultScope', 'populated')
-    .findByPk(songId);
-  return Promise.all([addedToList, songFromDb])
-    .then(([result, song]) => song);
+  const [, song] = await Promise.all([
+    this.addSong(songId),
+    db.model('song').scope('defaultScope', 'populated').findByPk(songId),
+  ]);
+  return song;
 };
 
 module.exports = Playlist;
