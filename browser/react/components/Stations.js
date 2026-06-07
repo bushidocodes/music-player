@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 //props.stations.[genre] =[]
 
 export default function (props) {
-  console.log("props is ", props);
 
   // const DUMMY_STATIONS_DATA = [
   //   { name: '90s Hip Hop' },
