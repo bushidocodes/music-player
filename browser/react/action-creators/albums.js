@@ -16,6 +16,7 @@ export const getAlbumById = albumId => {
     axios.get(`/api/albums/${albumId}`)
       .then(response => {
         dispatch(receiveAlbum(response.data));
-      });
+      })
+      .catch(err => console.error('Failed to load album:', err));
   };
 };

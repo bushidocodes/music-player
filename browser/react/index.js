@@ -38,7 +38,8 @@ function AppWrapper() {
         store.dispatch(receiveAlbums(albums));
         store.dispatch(receiveArtists(artists));
         store.dispatch(receivePlaylists(playlists));
-      });
+      })
+      .catch(err => console.error('Failed to load app data:', err));
   }, []);
   return <App />;
 }
