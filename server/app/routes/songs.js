@@ -8,7 +8,7 @@ const { PassThrough } = require('stream');
 const models = require('../../db/models');
 const Song = models.Song;
 const mm = require('music-metadata');
-const fs = require('fs')
+const fs = require('fs');
 
 module.exports = router;
 
@@ -24,7 +24,7 @@ router.param('songId', function (req, res, next, id) {
     if (!song) {
       const err = Error('Song not found');
       err.status = 404;
-      throw err
+      throw err;
     }
     req.song = song;
     next();

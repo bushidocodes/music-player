@@ -1,23 +1,23 @@
 'use strict';
-/* eslint-disable semi, global-require, arrow-spacing, no-unused-expressions, no-return-assign */
+/* eslint-disable global-require, arrow-spacing, no-unused-expressions, no-return-assign */
 
 const Sequelize = require('sequelize');
 const _ = require('lodash');
 
-const describe = global.describe || (()=>{})
+const describe = global.describe || (()=>{});
 
 describe('unique (deep: String) through (near: String)', ()=>{
-  const expect = require('chai').expect
-  const def = unique('artists').through('songs')
+  const expect = require('chai').expect;
+  const def = unique('artists').through('songs');
 
   it('provides a Sequelize virtual column definition', ()=>{
-    expect(def).to.be.an('object')
-    expect(def.type).to.equal(Sequelize.VIRTUAL)
-    expect(def.get).to.be.a('function')
-  })
+    expect(def).to.be.an('object');
+    expect(def.type).to.equal(Sequelize.VIRTUAL);
+    expect(def.get).to.be.a('function');
+  });
 
   describe('defines a getter', ()=>{
-    var allArtists
+    var allArtists;
     const [teganAndSara,
            yeahYeahYeahs,
            sleaterKinney,
@@ -26,7 +26,7 @@ describe('unique (deep: String) through (near: String)', ()=>{
                                      {artist: 'The Yeah Yeah Yeahs', id: 1},
                                      {artist: 'Sleater Kinnety', id: 2},
                                      {artist: 'Miley Cyrus', id: 3},
-                                     {artist: 'Joan Jett', id: 4}]
+                                     {artist: 'Joan Jett', id: 4}];
 
     it('returns unique (by id) instances of the deep model via the through model', ()=>{
       let uniqueArtists = def.get.apply({
@@ -37,32 +37,32 @@ describe('unique (deep: String) through (near: String)', ()=>{
           {title: 'Maps', artists: [yeahYeahYeahs]},
           {title: 'Bad Reputation', artists: [miley, joanJett]}
         ]
-      })
-      expect(_.sortBy(uniqueArtists, artist => artist.id)).to.eql(allArtists)
-    })
+      });
+      expect(_.sortBy(uniqueArtists, artist => artist.id)).to.eql(allArtists);
+    });
 
     it('returns [] when the through model has no entries', ()=>{
-      let result = def.get.apply({ songs: [] })
-      expect(result).to.eql([])
-    })
+      let result = def.get.apply({ songs: [] });
+      expect(result).to.eql([]);
+    });
 
     it('caches results', ()=>{
       let spy = {
         getSongsCalled: 0,
         get songs() {
-          ++this.getSongsCalled
+          ++this.getSongsCalled;
           return [
             {artists: [{id: 1}]},
             {artists: [{id: 2}]}
-          ]
+          ];
         }
-      }
-      def.get.apply(spy)
-      def.get.apply(spy)
-      expect(spy.getSongsCalled).to.equal(1)
-    })
-  })
-})
+      };
+      def.get.apply(spy);
+      def.get.apply(spy);
+      expect(spy.getSongsCalled).to.equal(1);
+    });
+  });
+});
 
 function unique(deepColumn) {
   return {
@@ -70,19 +70,19 @@ function unique(deepColumn) {
       return {
         type: Sequelize.VIRTUAL,
         get: function() {
-          const key = `._unique_${deepColumn}_through_${nearColumn}_`
-          if (this[key]) return this[key]
+          const key = `._unique_${deepColumn}_through_${nearColumn}_`;
+          if (this[key]) return this[key];
           var collection = _.chain(this[nearColumn])
             .flatMap(obj => obj[deepColumn])
             .filter(_.isObject)
             .uniqBy(model => model.id)
-            .value()
-          if (!collection.length) return this[key] = []
-          return this[key] = collection
+            .value();
+          if (!collection.length) return this[key] = [];
+          return this[key] = collection;
         }
-      }
+      };
     }
-  }
+  };
 }
 
-module.exports = unique
+module.exports = unique;

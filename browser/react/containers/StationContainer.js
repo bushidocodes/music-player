@@ -24,4 +24,4 @@ const ContainerCreator = connect(mapStateToProps, mapDispatchToProps);
 
 const StationContainer = ContainerCreator(Station);
 
-export default StationContainer
+export default StationContainer;

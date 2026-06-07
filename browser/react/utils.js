@@ -25,6 +25,6 @@ export const generateStationsFromSongs = (songs) => {
   songs.forEach((song) => {
     resultObj[song.genre] = resultObj[song.genre] || [];
     resultObj[song.genre].push(song);
-  })
+  });
   return resultObj;
-}
+};

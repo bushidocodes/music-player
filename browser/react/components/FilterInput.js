@@ -14,7 +14,7 @@ const FilterInput = (props) => {
         placeholder="Enter artist name"
       />
     </form>
-  )
+  );
 };
 
 export default FilterInput;
