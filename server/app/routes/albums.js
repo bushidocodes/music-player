@@ -18,7 +18,7 @@ router.param('albumId', function (req, res, next, id) {
     if (!album) {
       const err = Error('Album not found');
       err.status = 404;
-      throw err
+      throw err;
     }
     req.album = album;
     next();

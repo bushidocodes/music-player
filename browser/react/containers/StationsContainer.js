@@ -15,4 +15,4 @@ const ContainerCreator = connect(mapStateToProps, mapDispatchToProps);
 
 const StationsContainer = ContainerCreator(Stations);
 
-export default StationsContainer
+export default StationsContainer;

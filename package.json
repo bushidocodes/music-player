@@ -8,6 +8,7 @@
     "build": "webpack --mode=production",
     "test": "mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
+    "lint": "eslint browser/react server --ext .js",
     "seed": "node ./bin/iTunesSeed.js",
     "db-init": "pg-init juke"
   },
@@ -48,7 +49,9 @@
     "webpack-dev-server": "^5.2.1"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.29.7",
     "chai": "^5.1.2",
+    "eslint": "^8.57.1",
     "mocha": "^10.8.2",
     "testem": "1.2.2"
   }

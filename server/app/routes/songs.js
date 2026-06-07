@@ -9,7 +9,7 @@ const { PassThrough } = require('stream');
 const models = require('../../db/models');
 const Song = models.Song;
 const mm = require('music-metadata');
-const fs = require('fs')
+const fs = require('fs');
 
 module.exports = router;
 
@@ -25,7 +25,7 @@ router.param('songId', function (req, res, next, id) {
     if (!song) {
       const err = Error('Song not found');
       err.status = 404;
-      throw err
+      throw err;
     }
     req.song = song;
     next();
@@ -78,8 +78,8 @@ router.get('/:songId/image', function (req, res, next) {
 });
 
 router.get('/:songId/audio', function (req, res, next) {
-  const url = urlParse(req.song.url)
+  const url = urlParse(req.song.url);
   url.protocol === 'file:'?
     res.sendFile(decodeURIComponent(url.path))
-    : res.redirect(req.song.url)
+    : res.redirect(req.song.url);
 });

@@ -30,7 +30,7 @@ router.param('playlistId', function (req, res, next, id) {
     if (!playlist) {
       const err = Error('Playlist not found');
       err.status = 404;
-      throw err
+      throw err;
     }
     req.playlist = playlist;
     next();
