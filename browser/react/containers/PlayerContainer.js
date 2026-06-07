@@ -1,63 +1,45 @@
-import React, {Component} from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import AUDIO from '../audio';
-import store from '../store';
-import {previous, next, setProgress, toggleSong} from '../action-creators/player';
+import { previous, next, setProgress, toggleSong } from '../action-creators/player';
 import Player from '../components/Player';
 
-export default class extends Component {
+export default function PlayerContainer() {
+  const player = useSelector(state => state.player);
+  const dispatch = useDispatch();
 
-  constructor() {
-    super();
-    this.state = store.getState().player;
-    this.toggle = this.toggle.bind(this);
-    this.next = this.next.bind(this);
-    this.prev = this.prev.bind(this);
-  }
+  // Stable callbacks — dispatch is always the same reference
+  const handleNext = useCallback(() => dispatch(next()), [dispatch]);
+  const handlePrev = useCallback(() => dispatch(previous()), [dispatch]);
+  const handleToggle = useCallback(
+    () => dispatch(toggleSong(player.currentSong, player.currentSongList)),
+    [dispatch, player.currentSong, player.currentSongList]
+  );
 
-  componentDidMount() {
-    this._onEnded = () => this.next();
-    this._onTimeUpdate = () => {
+  useEffect(() => {
+    const onEnded = () => dispatch(next());
+    const onTimeUpdate = () => {
       const duration = AUDIO.duration;
       if (duration && isFinite(duration)) {
-        store.dispatch(setProgress(AUDIO.currentTime / duration));
+        dispatch(setProgress(AUDIO.currentTime / duration));
       }
     };
 
-    AUDIO.addEventListener('ended', this._onEnded);
-    AUDIO.addEventListener('timeupdate', this._onTimeUpdate);
+    AUDIO.addEventListener('ended', onEnded);
+    AUDIO.addEventListener('timeupdate', onTimeUpdate);
 
-    this.unsubscribe = store.subscribe(() => {
-      this.setState(store.getState().player);
-    });
-  }
+    return () => {
+      AUDIO.removeEventListener('ended', onEnded);
+      AUDIO.removeEventListener('timeupdate', onTimeUpdate);
+    };
+  }, [dispatch]);
 
-  componentWillUnmount() {
-    AUDIO.removeEventListener('ended', this._onEnded);
-    AUDIO.removeEventListener('timeupdate', this._onTimeUpdate);
-    this.unsubscribe();
-  }
-
-  next() {
-    store.dispatch(next());
-  }
-
-  prev() {
-    store.dispatch(previous());
-  }
-
-  toggle() {
-    store.dispatch(
-      toggleSong(this.state.currentSong, this.state.currentSongList)
-    );
-  }
-
-  render() {
-    return <Player
-      {...this.state}
-      next={this.next}
-      prev={this.prev}
-      toggle={this.toggle}
-    />;
-  }
-
+  return (
+    <Player
+      {...player}
+      next={handleNext}
+      prev={handlePrev}
+      toggle={handleToggle}
+    />
+  );
 }

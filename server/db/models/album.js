@@ -9,7 +9,7 @@ module.exports = db.define('album', {
   name: {
     type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
     allowNull: false,
-    set: function (val) {
+    set(val) {
       this.setDataValue('name', val.trim());
     }
   },

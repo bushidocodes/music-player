@@ -9,7 +9,7 @@ const Playlist = db.define('playlist', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
-    set: function (val) {
+    set(val) {
       this.setDataValue('name', val.trim());
     }
   },
