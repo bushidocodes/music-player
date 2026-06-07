@@ -24,6 +24,7 @@ export const getArtistById = artistId => {
       .then(results => results.map(r => r.data))
       .then(results => {
         dispatch(receiveArtist(...results));
-      });
+      })
+      .catch(err => console.error('Failed to load artist:', err));
   };
 };

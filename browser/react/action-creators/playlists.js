@@ -29,7 +29,8 @@ export const getPlaylistById = playlistId => {
     return axios.get(`/api/playlists/${playlistId}`)
       .then(response => {
         dispatch(receivePlaylist(response.data));
-      });
+      })
+      .catch(err => console.error('Failed to load playlist:', err));
   };
 
 };
@@ -55,7 +56,8 @@ export const loadAllSongs = () => {
     axios.get('/api/songs')
       .then(response => {
         dispatch(receiveAllSongs(response.data));
-      });
+      })
+      .catch(err => console.error('Failed to load songs:', err));
   };
 };
 
