@@ -33,7 +33,7 @@ const Song = db.define('song', {
   },
 });
 
-Song.prototype.toJSON = function () {
+Song.prototype.toJSON = function toJSON() {
   const plain = this.get({ plain: true });
   delete plain.url;
   return plain;

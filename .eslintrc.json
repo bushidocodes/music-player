@@ -11,7 +11,14 @@
       "presets": ["@babel/preset-env", "@babel/preset-react"]
     }
   },
+  "plugins": ["react"],
   "rules": {
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-unused-vars": ["error", { "args": "none", "ignoreRestSiblings": true }],
+    "object-shorthand": ["error", "always"],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Songs from './Songs';
 
-export default function (props) {
+export default function Station(props) {
 
   const songs = props.songs;
 

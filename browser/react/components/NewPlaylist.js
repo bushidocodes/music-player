@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function (props) {
+export default function NewPlaylist(props) {
 
   const handleChange = props.handleChange;
   const handleSubmit = props.handleSubmit;

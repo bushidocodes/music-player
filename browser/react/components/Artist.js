@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
-export default function (props) {
+export default function Artist(props) {
 
   const artist = props.selectedArtist;
   const albums = artist.albums || [];
