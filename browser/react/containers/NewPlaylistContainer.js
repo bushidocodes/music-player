@@ -1,60 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import NewPlaylist from '../components/NewPlaylist';
-import store from '../store';
-import {addNewPlaylist} from '../action-creators/playlists';
+import { addNewPlaylist } from '../action-creators/playlists';
 
-class FormContainer extends React.Component {
+export default function NewPlaylistContainer({ navigate }) {
+  const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState('');
+  const [dirty, setDirty] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputValue: '',
-      dirty: false
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  const handleChange = (evt) => {
+    setInputValue(evt.target.value);
+    setDirty(true);
+  };
 
-  handleChange(evt) {
-    const value = evt.target.value;
-    this.setState({
-      inputValue: value,
-      dirty: true
-    });
-  }
-
-  handleSubmit(evt) {
-
+  const handleSubmit = (evt) => {
     evt.preventDefault();
+    dispatch(addNewPlaylist(inputValue, navigate));
+    setInputValue('');
+    setDirty(false);
+  };
 
-    store.dispatch(addNewPlaylist(this.state.inputValue, this.props.navigate));
+  let warning = '';
+  if (!inputValue && dirty) warning = 'You must enter a name';
+  else if (inputValue.length > 16) warning = 'Name must be less than 16 characters';
 
-    this.setState({
-      inputValue: '',
-      dirty: false
-    });
-
-  }
-
-  render() {
-
-    const dirty = this.state.dirty;
-    const inputValue = this.state.inputValue;
-    let warning = '';
-
-    if (!inputValue && dirty) warning = 'You must enter a name';
-    else if (inputValue.length > 16) warning = 'Name must be less than 16 characters';
-
-    return (
-      <NewPlaylist
-        handleChange={this.handleChange}
-        handleSubmit={this.handleSubmit}
-        inputValue={inputValue}
-        warning={warning}
-      />
-    );
-  }
-
+  return (
+    <NewPlaylist
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+      inputValue={inputValue}
+      warning={warning}
+    />
+  );
 }
-
-export default FormContainer;

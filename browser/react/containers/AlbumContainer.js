@@ -1,36 +1,22 @@
-import React, {Component} from 'react';
-import store from '../store';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Album from '../components/Album';
-import {toggleSong} from '../action-creators/player';
+import { toggleSong } from '../action-creators/player';
 
-export default class extends Component {
+export default function AlbumContainer() {
+  const selectedAlbum = useSelector(state => state.albums.selected);
+  const currentSong = useSelector(state => state.player.currentSong);
+  const isPlaying = useSelector(state => state.player.isPlaying);
+  const dispatch = useDispatch();
 
-  constructor() {
-    super();
-    this.state = store.getState();
-  }
+  const toggleOne = (song, list) => dispatch(toggleSong(song, list));
 
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() => {
-      this.setState(store.getState());
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  toggle(song, list) {
-    store.dispatch(toggleSong(song, list));
-  }
-
-  render() {
-    return <Album
-      selectedAlbum={this.state.albums.selected}
-      currentSong={this.state.player.currentSong}
-      isPlaying={this.state.player.isPlaying}
-      toggleOne={this.toggle}
-    />;
-  }
-
+  return (
+    <Album
+      selectedAlbum={selectedAlbum}
+      currentSong={currentSong}
+      isPlaying={isPlaying}
+      toggleOne={toggleOne}
+    />
+  );
 }

@@ -1,26 +1,8 @@
-import React, {Component} from 'react';
-import store from '../store';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import Albums from '../components/Albums';
 
-export default class extends Component {
-
-  constructor() {
-    super();
-    this.state = store.getState().albums;
-  }
-
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() => {
-      this.setState(store.getState().albums);
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  render() {
-    return <Albums albums={this.state.list}/>;
-  }
-
+export default function AlbumsContainer() {
+  const albums = useSelector(state => state.albums.list);
+  return <Albums albums={albums} />;
 }

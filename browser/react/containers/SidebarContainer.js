@@ -1,28 +1,8 @@
-import React, {Component} from 'react';
-import store from '../store';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 
-export default class extends Component {
-
-  constructor() {
-    super();
-    this.state = store.getState().playlists;
-  }
-
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() => {
-      this.setState(store.getState().playlists);
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  render() {
-    return (
-      <Sidebar playlists={this.state.list}/>
-    );
-  }
-
+export default function SidebarContainer() {
+  const playlists = useSelector(state => state.playlists.list);
+  return <Sidebar playlists={playlists} />;
 }

@@ -1,67 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import AddSong from '../components/AddSong';
-import store from '../store';
-import {loadAllSongs, addSongToPlaylist} from '../action-creators/playlists';
+import { loadAllSongs, addSongToPlaylist } from '../action-creators/playlists';
 
-class AddSongContainer extends React.Component {
+export default function AddSongContainer(props) {
+  const songs = useSelector(state => state.songs);
+  const playlistId = useSelector(state => state.playlists.selected.id);
+  const dispatch = useDispatch();
+  const [songId, setSongId] = useState(1);
+  const [error, setError] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = Object.assign({
-      songId: 1,
-      error: false
-    }, store.getState());
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  useEffect(() => {
+    dispatch(loadAllSongs());
+  }, []);
 
-  componentDidMount() {
+  const handleChange = (evt) => {
+    setSongId(evt.target.value);
+    setError(false);
+  };
 
-    this.unsubscribe = store.subscribe(() => {
-      this.setState(store.getState());
-    });
-
-    store.dispatch(loadAllSongs());
-
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  handleChange(evt) {
-    this.setState({
-      songId: evt.target.value,
-      error: false
-    });
-  }
-
-  handleSubmit(evt) {
-
+  const handleSubmit = (evt) => {
     evt.preventDefault();
+    dispatch(addSongToPlaylist(playlistId, songId))
+      .catch(() => setError(true));
+  };
 
-    const playlistId = this.state.playlists.selected.id;
-    const songId = this.state.songId;
-
-    store.dispatch(addSongToPlaylist(playlistId, songId))
-      .catch(() => this.setState({ error: true }));
-
-  }
-
-  render() {
-
-    const songs = this.state.songs;
-    const error = this.state.error;
-
-    return (
-      <AddSong
-        {...this.props}
-        songs={songs}
-        error={error}
-        handleChange={this.handleChange}
-        handleSubmit={this.handleSubmit}/>
-    );
-  }
+  return (
+    <AddSong
+      {...props}
+      songs={songs}
+      error={error}
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+    />
+  );
 }
-
-export default AddSongContainer;
