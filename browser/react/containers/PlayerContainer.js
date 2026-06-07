@@ -16,7 +16,12 @@ export default class extends Component {
 
   componentDidMount() {
     this._onEnded = () => this.next();
-    this._onTimeUpdate = () => store.dispatch(setProgress(AUDIO.currentTime / AUDIO.duration));
+    this._onTimeUpdate = () => {
+      const duration = AUDIO.duration;
+      if (duration && isFinite(duration)) {
+        store.dispatch(setProgress(AUDIO.currentTime / duration));
+      }
+    };
 
     AUDIO.addEventListener('ended', this._onEnded);
     AUDIO.addEventListener('timeupdate', this._onTimeUpdate);

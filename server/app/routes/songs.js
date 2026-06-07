@@ -2,7 +2,6 @@
 
 const express = require('express');
 const router = express.Router();
-const urlParse = require('url').parse;
 const http = require('http');
 const https = require('https');
 const { PassThrough } = require('stream');
@@ -40,9 +39,9 @@ router.get('/:songId', function (req, res) {
 
 // Opens a URL as a readable stream, following HTTP redirects.
 function open(url) {
-  const parsed = urlParse(url);
+  const parsed = new URL(url);
   if (parsed.protocol === 'file:') {
-    return fs.createReadStream(decodeURIComponent(parsed.path));
+    return fs.createReadStream(decodeURIComponent(parsed.pathname));
   }
   const pass = new PassThrough();
   function fetch(currentUrl) {
@@ -78,8 +77,8 @@ router.get('/:songId/image', function (req, res, next) {
 });
 
 router.get('/:songId/audio', function (req, res, next) {
-  const url = urlParse(req.song.url);
-  url.protocol === 'file:'?
-    res.sendFile(decodeURIComponent(url.path))
+  const parsedUrl = new URL(req.song.url);
+  parsedUrl.protocol === 'file:'
+    ? res.sendFile(decodeURIComponent(parsedUrl.pathname))
     : res.redirect(req.song.url);
 });

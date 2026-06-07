@@ -41,6 +41,11 @@ describe('unique (deep: String) through (near: String)', ()=>{
       expect(_.sortBy(uniqueArtists, artist => artist.id)).to.eql(allArtists);
     });
 
+    it('returns [] when the through model has no entries', ()=>{
+      let result = def.get.apply({ songs: [] });
+      expect(result).to.eql([]);
+    });
+
     it('caches results', ()=>{
       let spy = {
         getSongsCalled: 0,
@@ -72,7 +77,7 @@ function unique(deepColumn) {
             .filter(_.isObject)
             .uniqBy(model => model.id)
             .value();
-          if (!collection.length) return;
+          if (!collection.length) return this[key] = [];
           return this[key] = collection;
         }
       };
