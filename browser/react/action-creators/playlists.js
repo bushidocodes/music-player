@@ -72,11 +72,10 @@ export const addSongToPlaylist = (playlistId, songId) => {
       .then(song => {
 
         const selectedPlaylist = getState().playlists.selected;
-        const songs = selectedPlaylist.songs;
-        const newSongs = songs.concat([convertSong(song)]);
-        const newSelectedPlaylist = Object.assign({}, selectedPlaylist, {
-          songs: newSongs
-        });
+        const newSelectedPlaylist = {
+          ...selectedPlaylist,
+          songs: [...selectedPlaylist.songs, convertSong(song)],
+        };
 
         dispatch(receivePlaylist(newSelectedPlaylist));
 

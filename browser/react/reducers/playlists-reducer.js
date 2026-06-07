@@ -1,7 +1,6 @@
 import {
   RECEIVE_PLAYLISTS,
   RECEIVE_PLAYLIST,
-  RECEIVE_SONGS
 } from '../constants';
 
 import {convertSong} from '../utils';
@@ -13,24 +12,23 @@ const initialPlaylistsState = {
 
 export default function (state = initialPlaylistsState, action) {
 
-  const newState = Object.assign({}, state);
-
   switch (action.type) {
 
     case RECEIVE_PLAYLISTS:
-      newState.list = action.playlists;
-      break;
+      return { ...state, list: action.playlists };
 
     case RECEIVE_PLAYLIST:
-      newState.selected = action.playlist;
-      newState.selected.songs = newState.selected.songs.map(convertSong);
-      break;
+      return {
+        ...state,
+        selected: {
+          ...action.playlist,
+          songs: action.playlist.songs.map(convertSong),
+        },
+      };
 
     default:
       return state;
 
   }
-
-  return newState;
 
 }

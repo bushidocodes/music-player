@@ -6,8 +6,6 @@ import {
   SET_CURRENT_SONG,
   SET_LIST,
   SET_PROGRESS,
-  NEXT_SONG,
-  PREVIOUS_SONG
 } from '../constants';
 
 import {skip} from '../utils';
