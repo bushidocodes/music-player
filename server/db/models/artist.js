@@ -15,7 +15,7 @@ const Artist = db.define('artist', {
 
 });
 
-Artist.prototype.getAlbums = function () {
+Artist.prototype.getAlbums = async function () {
   return db.model('album').scope('defaultScope', 'populated').findAll({
     include: [{
       model: db.model('song'),

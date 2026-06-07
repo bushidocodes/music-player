@@ -6,32 +6,33 @@ const models = require('../../db/models');
 const Album = models.Album;
 module.exports = router;
 
-router.get('/', function (req, res, next) {
-  Album.scope('defaultScope', 'songIds').findAll()
-  .then(albums => res.json(albums))
-  .catch(next);
+router.get('/', async (req, res, next) => {
+  try {
+    const albums = await Album.scope('defaultScope', 'songIds').findAll();
+    res.json(albums);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.param('albumId', function (req, res, next, id) {
-  Album.scope('defaultScope', 'populated').findByPk(id)
-  .then(function (album) {
+router.param('albumId', async (req, res, next, id) => {
+  try {
+    const album = await Album.scope('defaultScope', 'populated').findByPk(id);
     if (!album) {
-      const err = Error('Album not found');
+      const err = new Error('Album not found');
       err.status = 404;
-      throw err;
+      return next(err);
     }
     req.album = album;
     next();
-    return null; // silences bluebird warning about promises inside of next
-  })
-  .catch(next);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/:albumId', function (req, res) {
-  res.json(req.album);
-});
+router.get('/:albumId', (req, res) => res.json(req.album));
 
-router.get('/:albumId/image', function (req, res, next) {
+router.get('/:albumId/image', (req, res, next) => {
   if (!req.album.songs || req.album.songs.length === 0) {
     const err = new Error('Album has no songs');
     err.status = 404;
@@ -40,14 +41,10 @@ router.get('/:albumId/image', function (req, res, next) {
   res.redirect(`/api/songs/${req.album.songs[0].id}/image`);
 });
 
-router.get('/:albumId/songs/', function (req, res) {
-  res.json(req.album.songs);
-});
+router.get('/:albumId/songs/', (req, res) => res.json(req.album.songs));
 
-router.get('/:albumId/songs/:songId', function (req, res) {
-  const songToSend = req.album.songs.find(song => {
-    return song.id === Number(req.params.songId);
-  });
+router.get('/:albumId/songs/:songId', (req, res) => {
+  const songToSend = req.album.songs.find(song => song.id === Number(req.params.songId));
   if (!songToSend) return res.sendStatus(404);
   res.json(songToSend);
 });

@@ -6,41 +6,46 @@ const models = require('../../db/models');
 const Artist = models.Artist;
 module.exports = router;
 
-router.get('/', function (req, res, next) {
-  Artist.findAll()
-  .then(artists => res.json(artists))
-  .catch(next);
+router.get('/', async (req, res, next) => {
+  try {
+    const artists = await Artist.findAll();
+    res.json(artists);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.param('artistId', function (req, res, next, id) {
-  Artist.findByPk(id)
-  .then(artist => {
+router.param('artistId', async (req, res, next, id) => {
+  try {
+    const artist = await Artist.findByPk(id);
     if (!artist) {
-      const err = Error('Artist not found');
+      const err = new Error('Artist not found');
       err.status = 404;
-      throw err;
+      return next(err);
     }
     req.artist = artist;
     next();
-    return null; // silences bluebird warning about promises inside of next
-  })
-  .catch(next);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/:artistId', function (req, res) {
-  res.json(req.artist);
+router.get('/:artistId', (req, res) => res.json(req.artist));
+
+router.get('/:artistId/albums', async (req, res, next) => {
+  try {
+    const albums = await req.artist.getAlbums();
+    res.json(albums);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.get('/:artistId/albums', function (req, res, next) {
-  req.artist.getAlbums() // instance method, check it out in the model
-  .then(albums => res.json(albums))
-  .catch(next);
-});
-
-router.get('/:artistId/songs', function (req, res, next) {
-  req.artist.getSongs({
-    include: [Artist]
-  })
-  .then(songs => res.json(songs))
-  .catch(next);
+router.get('/:artistId/songs', async (req, res, next) => {
+  try {
+    const songs = await req.artist.getSongs({ include: [Artist] });
+    res.json(songs);
+  } catch (err) {
+    next(err);
+  }
 });

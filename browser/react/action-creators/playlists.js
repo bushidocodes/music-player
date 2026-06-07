@@ -23,64 +23,40 @@ export const receiveAllSongs = songs => ({
   songs
 });
 
-export const getPlaylistById = playlistId => {
-
-  return dispatch => {
-    return axios.get(`/api/playlists/${playlistId}`)
-      .then(response => {
-        dispatch(receivePlaylist(response.data));
-      })
-      .catch(err => console.error('Failed to load playlist:', err));
-  };
-
+export const getPlaylistById = playlistId => async dispatch => {
+  try {
+    const { data } = await axios.get(`/api/playlists/${playlistId}`);
+    dispatch(receivePlaylist(data));
+  } catch (err) {
+    console.error('Failed to load playlist:', err);
+  }
 };
 
-export const addNewPlaylist = (playlistName, navigate) => {
-
-  return (dispatch, getState) => {
-
-    return axios.post('/api/playlists', {name: playlistName})
-      .then(res => res.data)
-      .then(playlist => {
-        const newListOfPlaylists = getState().playlists.list.concat([playlist]);
-        dispatch(receivePlaylists(newListOfPlaylists));
-        navigate(`/playlists/${playlist.id}`);
-      });
-
-  };
-
+export const addNewPlaylist = (playlistName, navigate) => async (dispatch, getState) => {
+  try {
+    const { data: playlist } = await axios.post('/api/playlists', { name: playlistName });
+    const newListOfPlaylists = [...getState().playlists.list, playlist];
+    dispatch(receivePlaylists(newListOfPlaylists));
+    navigate(`/playlists/${playlist.id}`);
+  } catch (err) {
+    console.error('Failed to create playlist:', err);
+  }
 };
 
-export const loadAllSongs = () => {
-  return dispatch => {
-    axios.get('/api/songs')
-      .then(response => {
-        dispatch(receiveAllSongs(response.data));
-      })
-      .catch(err => console.error('Failed to load songs:', err));
-  };
+export const loadAllSongs = () => async dispatch => {
+  try {
+    const { data } = await axios.get('/api/songs');
+    dispatch(receiveAllSongs(data));
+  } catch (err) {
+    console.error('Failed to load songs:', err);
+  }
 };
 
-export const addSongToPlaylist = (playlistId, songId) => {
-
-  return (dispatch, getState) => {
-
-    return axios.post(`/api/playlists/${playlistId}/songs`, {
-      id: songId
-    })
-      .then(res => res.data)
-      .then(song => {
-
-        const selectedPlaylist = getState().playlists.selected;
-        const newSelectedPlaylist = {
-          ...selectedPlaylist,
-          songs: [...selectedPlaylist.songs, convertSong(song)],
-        };
-
-        dispatch(receivePlaylist(newSelectedPlaylist));
-
-      });
-
-  };
-
+export const addSongToPlaylist = (playlistId, songId) => async (dispatch, getState) => {
+  const { data: song } = await axios.post(`/api/playlists/${playlistId}/songs`, { id: songId });
+  const selectedPlaylist = getState().playlists.selected;
+  dispatch(receivePlaylist({
+    ...selectedPlaylist,
+    songs: [...selectedPlaylist.songs, convertSong(song)],
+  }));
 };
