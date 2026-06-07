@@ -10,6 +10,8 @@ export default class extends Component {
     super();
     this.state = store.getState().player;
     this.toggle = this.toggle.bind(this);
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
   }
 
   componentDidMount() {
