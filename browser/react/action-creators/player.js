@@ -11,7 +11,11 @@ import {
 import {skip} from '../utils';
 
 export const play = () => {
-  AUDIO.play();
+  AUDIO.play().catch(err => {
+    if (err.name !== 'AbortError') {
+      console.error('Playback failed:', err);
+    }
+  });
   return {
     type: START_PLAYING
   };

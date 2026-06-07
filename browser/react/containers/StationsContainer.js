@@ -1,18 +1,9 @@
-import {connect} from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import Stations from '../components/Stations';
 import { generateStationsFromSongs } from '../utils';
 
-function mapStateToProps(state){
-  return {
-    stations: generateStationsFromSongs(state.songs)
-  };
+export default function StationsContainer() {
+  const stations = useSelector(state => generateStationsFromSongs(state.songs));
+  return <Stations stations={stations} />;
 }
-function mapDispatchToProps(dispatch){
-  return {};
-}
-
-const ContainerCreator = connect(mapStateToProps, mapDispatchToProps);
-
-const StationsContainer = ContainerCreator(Stations);
-
-export default StationsContainer;
