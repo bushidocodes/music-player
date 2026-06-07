@@ -12,25 +12,24 @@ const initialArtistState = {
 
 export default function (state = initialArtistState, action) {
 
-  const newState = Object.assign({}, state);
-
   switch (action.type) {
 
     case RECEIVE_ARTISTS:
-      newState.list = action.artists;
-      break;
+      return { ...state, list: action.artists };
 
     case RECEIVE_ARTIST:
-      action.artist.albums = convertAlbums(action.albums);
-      action.artist.songs = action.songs.map(convertSong);
-      newState.selected = action.artist;
-      break;
+      return {
+        ...state,
+        selected: {
+          ...action.artist,
+          albums: convertAlbums(action.albums),
+          songs: action.songs.map(convertSong),
+        },
+      };
 
     default:
       return state;
 
   }
-
-  return newState;
 
 }

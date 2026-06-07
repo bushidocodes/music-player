@@ -2,11 +2,11 @@ export const convertSong = (song) => {
   return { ...song, audioUrl: `/api/songs/${song.id}/audio` };
 };
 
-export const convertAlbum = (album) => {
-  album.imageUrl = `/api/albums/${album.id}/image`;
-  album.songs = album.songs.map(convertSong);
-  return album;
-};
+export const convertAlbum = (album) => ({
+  ...album,
+  imageUrl: `/api/albums/${album.id}/image`,
+  songs: album.songs.map(convertSong),
+});
 
 export const convertAlbums = (albums) =>
   albums.map(album => convertAlbum(album));

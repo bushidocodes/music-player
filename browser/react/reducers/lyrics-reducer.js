@@ -8,19 +8,14 @@ const initialLyricsState = {
 
 export default function (state = initialLyricsState, action) {
 
-  const newState = Object.assign({}, state);
-
   switch (action.type) {
 
     case SET_LYRICS:
-      newState.text = action.text;
-      break;
+      return { ...state, text: action.text };
 
     default:
       return state;
 
   }
-
-  return newState;
 
 }
