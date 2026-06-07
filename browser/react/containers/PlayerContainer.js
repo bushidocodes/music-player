@@ -15,11 +15,11 @@ export default class extends Component {
   }
 
   componentDidMount() {
+    this._onEnded = () => this.next();
+    this._onTimeUpdate = () => store.dispatch(setProgress(AUDIO.currentTime / AUDIO.duration));
 
-    AUDIO.addEventListener('ended', this.next);
-    AUDIO.addEventListener('timeupdate', () => {
-      store.dispatch(setProgress(AUDIO.currentTime / AUDIO.duration));
-    });
+    AUDIO.addEventListener('ended', this._onEnded);
+    AUDIO.addEventListener('timeupdate', this._onTimeUpdate);
 
     this.unsubscribe = store.subscribe(() => {
       this.setState(store.getState().player);
@@ -27,6 +27,8 @@ export default class extends Component {
   }
 
   componentWillUnmount() {
+    AUDIO.removeEventListener('ended', this._onEnded);
+    AUDIO.removeEventListener('timeupdate', this._onTimeUpdate);
     this.unsubscribe();
   }
 
