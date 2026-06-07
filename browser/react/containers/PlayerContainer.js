@@ -16,7 +16,10 @@ export default class extends Component {
 
     AUDIO.addEventListener('ended', this.next);
     AUDIO.addEventListener('timeupdate', () => {
-      store.dispatch(setProgress(AUDIO.currentTime / AUDIO.duration));
+      const duration = AUDIO.duration;
+      if (duration && isFinite(duration)) {
+        store.dispatch(setProgress(AUDIO.currentTime / duration));
+      }
     });
 
     this.unsubscribe = store.subscribe(() => {
