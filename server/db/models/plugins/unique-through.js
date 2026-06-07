@@ -17,7 +17,7 @@ describe('unique (deep: String) through (near: String)', ()=>{
   });
 
   describe('defines a getter', ()=>{
-    var allArtists;
+    let allArtists;
     const [teganAndSara,
            yeahYeahYeahs,
            sleaterKinney,
@@ -29,7 +29,7 @@ describe('unique (deep: String) through (near: String)', ()=>{
                                      {artist: 'Joan Jett', id: 4}];
 
     it('returns unique (by id) instances of the deep model via the through model', ()=>{
-      let uniqueArtists = def.get.apply({
+      const uniqueArtists = def.get.apply({
         songs: [
           {title: 'Divided', artists: [teganAndSara]},
           {title: 'Jumpers', artists: [sleaterKinney]},
@@ -42,12 +42,12 @@ describe('unique (deep: String) through (near: String)', ()=>{
     });
 
     it('returns [] when the through model has no entries', ()=>{
-      let result = def.get.apply({ songs: [] });
+      const result = def.get.apply({ songs: [] });
       expect(result).to.eql([]);
     });
 
     it('caches results', ()=>{
-      let spy = {
+      const spy = {
         getSongsCalled: 0,
         get songs() {
           ++this.getSongsCalled;
@@ -66,13 +66,13 @@ describe('unique (deep: String) through (near: String)', ()=>{
 
 function unique(deepColumn) {
   return {
-    through: function(nearColumn) {
+    through(nearColumn) {
       return {
         type: Sequelize.VIRTUAL,
-        get: function() {
+        get() {
           const key = `._unique_${deepColumn}_through_${nearColumn}_`;
           if (this[key]) return this[key];
-          var collection = _.chain(this[nearColumn])
+          const collection = _.chain(this[nearColumn])
             .flatMap(obj => obj[deepColumn])
             .filter(_.isObject)
             .uniqBy(model => model.id)

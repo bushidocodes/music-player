@@ -21,7 +21,7 @@ export const skip = (interval, {currentSongList, currentSong}) => {
 };
 
 export const generateStationsFromSongs = (songs) => {
-  let resultObj = {};
+  const resultObj = {};
   songs.forEach((song) => {
     resultObj[song.genre] = resultObj[song.genre] || [];
     resultObj[song.genre].push(song);

@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import SidebarContainer from '../containers/SidebarContainer';
 import PlayerContainer from '../containers/PlayerContainer';
 
-export default function () {
+export default function App() {
   return (
     <div id="main" className="container-fluid">
       <div className="row">
