@@ -74,6 +74,11 @@ router.delete('/:playlistId', async (req, res, next) => {
 router.get('/:playlistId/songs', (req, res) => res.json(req.playlist.songs));
 
 router.post('/:playlistId/songs', async (req, res, next) => {
+  if (!req.body.id && !req.body.song) {
+    const err = new Error('Request body must include either id or song');
+    err.status = 400;
+    return next(err);
+  }
   const id = req.body.id || req.body.song.id;
   try {
     const song = await req.playlist.addAndReturnSong(id);
