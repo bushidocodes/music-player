@@ -39,25 +39,31 @@ router.param('songId', async (req, res, next, id) => {
 router.get('/:songId', (req, res) => res.json(req.song));
 
 // Opens a URL as a readable stream, following HTTP redirects.
+// Limits redirect chains to MAX_REDIRECTS to prevent unbounded recursion.
+const MAX_REDIRECTS = 10;
 function open(url) {
   const parsed = new URL(url);
   if (parsed.protocol === 'file:') {
     return fs.createReadStream(decodeURIComponent(parsed.pathname));
   }
   const pass = new PassThrough();
-  function fetch(currentUrl) {
+  function fetch(currentUrl, redirectCount) {
+    if (redirectCount > MAX_REDIRECTS) {
+      pass.destroy(new Error(`Too many redirects (max ${MAX_REDIRECTS})`));
+      return;
+    }
     const get = currentUrl.startsWith('https:') ? https.get : http.get;
     get(currentUrl, response => {
       const { statusCode, headers } = response;
       if (statusCode >= 300 && statusCode < 400 && headers.location) {
         response.resume(); // drain and discard the redirect body
-        fetch(headers.location);
+        fetch(headers.location, redirectCount + 1);
       } else {
         response.pipe(pass);
       }
     }).on('error', err => pass.destroy(err));
   }
-  fetch(url);
+  fetch(url, 0);
   return pass;
 }
 
