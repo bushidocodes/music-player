@@ -3,8 +3,7 @@
 const { expect } = require('chai');
 
 // Stub db/models before loading the router so no DB connection is attempted.
-// Both this file and playlists.js live in the same directory, so require.resolve
-// produces the same absolute path from either file's perspective.
+// id '0' → not found (404 path); any other id → found
 const modelsPath = require.resolve('../../db/models');
 require.cache[modelsPath] = {
   id: modelsPath,
@@ -15,15 +14,16 @@ require.cache[modelsPath] = {
       findAll: async () => [],
       create: async data => ({ id: 1, ...data }),
       scope: () => ({
-        findByPk: async () => ({
-          id: 1,
-          name: 'Test Playlist',
-          songs: [{ id: 10, title: 'Song A' }],
-          update: async data => ({ id: 1, ...data }),
-          destroy: async () => {},
-          addAndReturnSong: async id => ({ id }),
-          removeSong: async () => {},
-        }),
+        findByPk: async id =>
+          id == 0 ? null : {
+            id: Number(id),
+            name: 'Test Playlist',
+            songs: [{ id: 10, title: 'Song A' }],
+            update: async data => ({ id: 1, ...data }),
+            destroy: async () => {},
+            addAndReturnSong: async songId => ({ id: songId }),
+            removeSong: async () => {},
+          },
       }),
     },
   },
@@ -37,6 +37,27 @@ function handler(method, path) {
   );
   return layer.route.stack[0].handle;
 }
+
+const playlistParam = router.params.playlistId[0];
+
+describe('Playlist param handler', () => {
+  it('passes a 404 error to next when the playlist does not exist', async () => {
+    const req = {};
+    let err;
+    await playlistParam(req, {}, e => { err = e; }, '0');
+    expect(err).to.be.instanceOf(Error);
+    expect(err.status).to.equal(404);
+    expect(err.message).to.equal('Playlist not found');
+  });
+
+  it('attaches the playlist to req and calls next when found', async () => {
+    const req = {};
+    let nextCalled = false;
+    await playlistParam(req, {}, () => { nextCalled = true; }, '1');
+    expect(req.playlist).to.include({ id: 1 });
+    expect(nextCalled).to.be.true;
+  });
+});
 
 describe('POST /api/playlists', () => {
   const createPlaylist = handler('post', '/');
