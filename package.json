@@ -7,6 +7,7 @@
     "start": "webpack serve & nodemon --watch server -e js,html server/start.js",
     "build": "webpack --mode=production",
     "test": "mocha server/**/*.test.js --reporter spec",
+    "test:coverage": "c8 mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
     "lint": "eslint browser/react server --ext .js",
     "seed": "node ./bin/iTunesSeed.js",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.29.7",
+    "c8": "^11.0.0",
     "chai": "^5.1.2",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.5",
