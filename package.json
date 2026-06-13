@@ -10,7 +10,7 @@
     "test:coverage": "c8 mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
     "lint": "eslint browser/react server --ext .js",
-    "seed": "node ./bin/iTunesSeed.js",
+    "seed": "node ./bin/seed.js",
     "db-init": "pg-init juke"
   },
   "dependencies": {
@@ -29,7 +29,6 @@
     "express": "^4.21.0",
     "fs-misc": "^2.0.0",
     "html-webpack-plugin": "^5.6.3",
-    "itunes-library-stream": "^0.0.0",
     "lodash": "^4.18.1",
     "music-metadata": "^11.13.0",
     "node-status": "^1.0.0",
@@ -43,7 +42,6 @@
     "redux-logger": "^3.0.6",
     "sequelize": "^6.37.5",
     "serve-favicon": "^2.5.1",
-    "userhome": "^1.0.1",
     "volleyball": "^1.5.1",
     "webpack": "^5.107.2",
     "webpack-cli": "^5.1.4",

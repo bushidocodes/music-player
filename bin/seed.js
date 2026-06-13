@@ -2,12 +2,11 @@
 
 'use strict'
 
-const itunes = require('itunes-library-stream')
-const userhome = require('userhome')
 const status = require('node-status')
 const path = require('path')
 const fs = require('fs')
 
+const { parsePlist } = require('./plist')
 const db = require('../server/db/db')
 require('../server/db/models') // Init the relations
 const log = require('./log')
@@ -26,26 +25,11 @@ const DEFAULT_TRACK_LIMIT = 500
 const { program } = require('commander')
 
 program
-  .usage('[options] [iTunes Music Library.xml...]')
-  .description("Seeds the juke database with metadata from an XML iTunes library file. " +
-               "By default, we'll import Juke's music.xml and your iTunes library.")
+  .usage('[options]')
+  .description("Seeds the juke database with metadata from Juke's bundled music.xml library.")
   .option('-f, --force', 'Force sync (will delete everything in the db)')
-  .option('-n, --no-itunes', 'Skip importing iTunes library')
   .option('-L, --limit <num>', `Limit total tracks imported to <num> (default ${DEFAULT_TRACK_LIMIT})`, parseInt)
   .option('-u, --unlimited', 'Import unlimited tracks')
-
-function checkItunes () {
-  return new Promise((resolve, reject) => {
-    try {
-      const xmlPath = path.resolve(userhome(), 'Music/iTunes/iTunes Music Library.xml')
-      fs.stat(xmlPath, (err, stats) => {
-        resolve(!err && stats.isFile() && xmlPath)
-      })
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
 
 function main() {
   program.parse(process.argv)
@@ -61,14 +45,8 @@ function main() {
 
   program[TRACKS] = opts.unlimited ? Infinity : opts.limit || DEFAULT_TRACK_LIMIT;
 
-  Promise.all([db.sync({ force: opts.force }), checkItunes()])
-    .then(([tablesAreReady, xmlPath]) => {
-      const imported = program.args.concat(
-        path.resolve(__dirname, '..', 'music.xml'),
-        opts.itunes && xmlPath
-      ).map(importLibrary)
-      return Promise.all(imported)
-    })
+  db.sync({ force: opts.force })
+    .then(() => importLibrary(path.resolve(__dirname, '..', 'music.xml')))
     .finally(() => {
       status.stop()
       db.close() // else Sequelize keeps open ~10 secs, anticipating queries
@@ -85,63 +63,55 @@ process.on('exit', bye =>
                .join('\n')
            ))
 
-// importLibrary(iTunesXml: String)
+// importLibrary(xmlPath: String)
 //
-// Imports the song data from the iTunes Music Library.xml file.
-function importLibrary(iTunesXml) {
-  if (!iTunesXml) return;
+// Imports the song data from an iTunes-format Music Library.xml file.
+function importLibrary(xmlPath) {
+  if (!xmlPath) return;
 
+  const tracksById = parsePlist(fs.readFileSync(xmlPath, 'utf8')).Tracks || {}
   const tracks = []
 
-  return new Promise(resolve => {
+  for (const id of Object.keys(tracksById)) {
+    const data = tracksById[id]
 
-    const xmlStream = fs.createReadStream(iTunesXml)
-    .on('error', err => console.error(err))
+    status[TRACKS].total.inc(1)
 
-    xmlStream.pipe(itunes.createTrackStream())
-    .on('data', function(data) {
+    // Filter out...
+    if (
+      (status[TRACKS].seeding.count >= program[TRACKS]) ||
+      !data.Location ||           // Songs from iCloud and TV shows and such, which won't have locations
+      !data.Name ||               // Entries which don't have names for some reason?
+      !data.Artist ||
+      !data.Album ||
+      (data.Kind && data.Kind.indexOf('audio') === -1) || // non-songs
+      (data.Kind && data.Kind.indexOf('Apple Lossless') !== -1) || // ALAC files
+      (data.Kind && data.Kind.indexOf('app') !== -1) // Apps
+    ) {
+      status[TRACKS].skipped.inc(1)
+      continue
+    }
 
-      status[TRACKS].total.inc(1)
+    status[TRACKS].seeding.inc(1)
 
-      // Filter out...
-      if (
-        (status[TRACKS].seeding.count >= program[TRACKS]) || // would be better to end stream, but `sax` does not handle .end correctly.
-        !data.Location ||           // Songs from iCloud and TV shows and such, which won't have locations
-        !data.Name ||               // Entries which don't have names for some reason?
-        !data.Artist ||
-        !data.Album ||
-        (data.Kind && data.Kind.indexOf('audio') === -1) || // non-songs
-        (data.Kind && data.Kind.indexOf('Apple Lossless') !== -1) || // ALAC files
-        (data.Kind && data.Kind.indexOf('app') !== -1) // Apps
-      ) {
-        status[TRACKS].skipped.inc(1)
-        return
-      }
-
-      status[TRACKS].seeding.inc(1)
-
-      const seeding = ArtistSong({
-        artistId: Artist({name: data.Artist || data['Album Artist'] || 'Unknown artist'}),
-        songId: Song({
-          name: data.Name,
-          url: data.Location,
-          genre: data.Genre,
-          albumId: Album({
-            name: data.Album,
-            artistId: Artist({name: data['Album Artist'] || data.Artist || 'Unknown artist'})
-          }),
-        })
+    const seeding = ArtistSong({
+      artistId: Artist({name: data.Artist || data['Album Artist'] || 'Unknown artist'}),
+      songId: Song({
+        name: data.Name,
+        url: data.Location,
+        genre: data.Genre,
+        albumId: Album({
+          name: data.Album,
+          artistId: Artist({name: data['Album Artist'] || data.Artist || 'Unknown artist'})
+        }),
       })
-
-      tracks.push(seeding)
-      seeding.then(() => status[TRACKS].seeded.inc(1))
-
-    })
-    .on('end', function () {
-      resolve(Promise.all(tracks))
     })
 
-  })
+    tracks.push(seeding)
+    seeding.then(() => status[TRACKS].seeded.inc(1))
+  }
+
+  return Promise.all(tracks)
 }
 
 // [Artist, Album, Song, ArtistSong]: [...findOrCreate<table: String>]
