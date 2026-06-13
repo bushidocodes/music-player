@@ -21,7 +21,7 @@ psql -U postgres -c "CREATE ROLE <your-username> WITH LOGIN SUPERUSER;"
 ```bash
 npm install          # install dependencies
 npm run db-init      # create the juke PostgreSQL database (one-time)
-npm run seed         # seed DB from music.xml (or your iTunes library)
+npm run seed         # seed DB from the bundled music.xml library
 npm start            # webpack watch + nodemon on port 1337
 ```
 
@@ -31,9 +31,9 @@ npm start            # webpack watch + nodemon on port 1337
 |---------|-------------|
 | `npm start` | Webpack watch + Nodemon dev server on port 1337 |
 | `npm run db-init` | Create the juke PostgreSQL database (one-time setup) |
-| `npm run seed` | Seed database from `music.xml` / iTunes library |
+| `npm run seed` | Seed database from the bundled `music.xml` library |
 | `npm run seed -- --force` | Re-seed, dropping existing data |
-| `npm run seed -- --unlimited` | Import full iTunes library (default cap: 500 tracks) |
+| `npm run seed -- --unlimited` | Import all tracks from `music.xml` (default cap: 500 tracks) |
 | `npm test` | Server-side Mocha tests |
 | `npm run test:player` | Browser/player tests via Testem |
 
