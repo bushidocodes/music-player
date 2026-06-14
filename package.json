@@ -5,7 +5,7 @@
   "type": "module",
   "main": "server/start.js",
   "scripts": {
-    "start": "webpack serve & nodemon --watch server -e js,html server/start.js",
+    "start": "webpack serve & node --watch --watch-path=server server/start.js",
     "build": "webpack --mode=production",
     "test": "mocha server/**/*.test.js --reporter spec",
     "test:coverage": "c8 mocha server/**/*.test.js --reporter spec",
@@ -47,7 +47,6 @@
     "eslint-plugin-react": "^7.37.5",
     "html-webpack-plugin": "^5.6.3",
     "mocha": "^11.7.6",
-    "nodemon": "^3.1.9",
     "node-status": "^1.0.0",
     "testem": "^3.20.1",
     "webpack": "^5.107.2",
