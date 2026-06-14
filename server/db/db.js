@@ -1,8 +1,8 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 import Sequelize from 'sequelize';
 import { DATABASE_URI } from '../env/index.js';
 
-console.log(chalk.yellow('Opening connection to PostgreSQL'));
+console.log(styleText('yellow', 'Opening connection to PostgreSQL'));
 
 export default new Sequelize(DATABASE_URI, {
   logging: false,
