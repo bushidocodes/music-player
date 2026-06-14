@@ -1,17 +1,20 @@
 import path from 'path';
+import { createRequire } from 'module';
 import express from 'express';
 import favicon from 'serve-favicon';
+
+const require = createRequire(import.meta.url);
 
 export default function (app) {
   const root = app.getValue('projectRoot');
 
-  const publicPath = path.join(root, './public');
-  const browserPath = path.join(root, './browser');
+  const bootstrapPath = path.dirname(require.resolve('bootstrap/package.json'));
+  const bootstrapIconsPath = path.dirname(require.resolve('bootstrap-icons/package.json'));
 
-  app.use('/bootstrap', express.static(path.join(root, './node_modules/bootstrap')));
-  app.use('/bootstrap-icons', express.static(path.join(root, './node_modules/bootstrap-icons')));
+  app.use('/bootstrap', express.static(bootstrapPath));
+  app.use('/bootstrap-icons', express.static(bootstrapIconsPath));
 
   app.use(favicon(app.getValue('faviconPath')));
-  app.use(express.static(publicPath));
-  app.use(express.static(browserPath));
+  app.use(express.static(path.join(root, './public')));
+  app.use(express.static(path.join(root, './browser')));
 }
