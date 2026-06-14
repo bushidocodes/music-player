@@ -19,6 +19,7 @@ export default {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: 'babel-loader',
+        resolve: { fullySpecified: false },
       },
     ],
   },
