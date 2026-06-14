@@ -1,11 +1,9 @@
-'use strict';
+import db from '../db.js';
+import unique from './plugins/unique-through.js';
 
-const db = require('../db');
 const DataTypes = db.Sequelize;
-const unique = require('./plugins/unique-through');
 
 const Playlist = db.define('playlist', {
-
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -14,9 +12,7 @@ const Playlist = db.define('playlist', {
     }
   },
   artists: unique('artists').through('songs')
-
 }, {
-
   scopes: {
     populated: () => ({
       include: [{
@@ -24,7 +20,6 @@ const Playlist = db.define('playlist', {
       }]
     })
   }
-
 });
 
 Playlist.prototype.addAndReturnSong = async function (songId) {
@@ -36,4 +31,4 @@ Playlist.prototype.addAndReturnSong = async function (songId) {
   return song;
 };
 
-module.exports = Playlist;
+export default Playlist;

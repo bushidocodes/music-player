@@ -1,10 +1,8 @@
-'use strict';
+import db from '../db.js';
 
-const db = require('../db');
 const DataTypes = db.Sequelize;
 
 const Artist = db.define('artist', {
-
   name: {
     type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
     allowNull: false,
@@ -12,7 +10,6 @@ const Artist = db.define('artist', {
       this.setDataValue('name', val.trim());
     }
   }
-
 });
 
 Artist.prototype.getAlbums = async function () {
@@ -27,4 +24,4 @@ Artist.prototype.getAlbums = async function () {
   });
 };
 
-module.exports = Artist;
+export default Artist;

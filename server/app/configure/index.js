@@ -1,21 +1,15 @@
-'use strict';
-/* eslint-disable global-require */
+import configureAppVariables from './app-variables.js';
+import configureStaticMiddleware from './static-middleware.js';
+import configureParsingMiddleware from './parsing-middleware.js';
 
-module.exports = (app) => {
-
-  // setValue and getValue are merely alias
-  // for app.set and app.get used in the less
-  // common way of setting application variables.
+export default (app) => {
   app.setValue = app.set.bind(app);
   app.getValue = (key) => app.get(key);
 
-  require('./app-variables')(app);
+  configureAppVariables(app);
 
-  // Logging middleware, set as application
-  // variable inside of server/app/configure/app-variables.js
   app.use(app.getValue('log'));
 
-  require('./static-middleware')(app);
-  require('./parsing-middleware')(app);
-
+  configureStaticMiddleware(app);
+  configureParsingMiddleware(app);
 };

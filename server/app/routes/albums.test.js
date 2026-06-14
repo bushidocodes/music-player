@@ -1,26 +1,15 @@
-'use strict';
+import { expect } from 'chai';
+import createAlbumsRouter from './albums.js';
 
-const { expect } = require('chai');
-
-// Stub db/models before loading the router so no DB connection is attempted.
-// id '0' → not found (404 path); any other id → found
-const modelsPath = require.resolve('../../db/models');
-require.cache[modelsPath] = {
-  id: modelsPath,
-  filename: modelsPath,
-  loaded: true,
-  exports: {
-    Album: {
-      scope: () => ({
-        findAll: async () => [],
-        findByPk: async id =>
-          id == 0 ? null : { id: Number(id), title: 'Test Album', songs: [{ id: 10 }] },
-      }),
-    },
-  },
+const mockAlbum = {
+  scope: () => ({
+    findAll: async () => [],
+    findByPk: async id =>
+      id == 0 ? null : { id: Number(id), title: 'Test Album', songs: [{ id: 10 }] },
+  }),
 };
 
-const router = require('./albums');
+const router = createAlbumsRouter(mockAlbum);
 
 function handler(method, path) {
   const layer = router.stack.find(

@@ -1,23 +1,12 @@
-'use strict';
+import { expect } from 'chai';
+import createArtistsRouter from './artists.js';
 
-const { expect } = require('chai');
-
-// Stub db/models before loading the router so no DB connection is attempted.
-const modelsPath = require.resolve('../../db/models');
-require.cache[modelsPath] = {
-  id: modelsPath,
-  filename: modelsPath,
-  loaded: true,
-  exports: {
-    Artist: {
-      findAll: async () => [{ id: 1, name: 'Test Artist' }],
-      // id '0' → not found (404 path); any other id → found
-      findByPk: async id => id == 0 ? null : { id: Number(id), name: 'Test Artist' },
-    },
-  },
+const mockArtist = {
+  findAll: async () => [{ id: 1, name: 'Test Artist' }],
+  findByPk: async id => id == 0 ? null : { id: Number(id), name: 'Test Artist' },
 };
 
-const router = require('./artists');
+const router = createArtistsRouter(mockArtist);
 
 function handler(method, path) {
   const layer = router.stack.find(

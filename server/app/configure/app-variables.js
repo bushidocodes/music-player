@@ -1,18 +1,17 @@
-'use strict';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import volleyball from 'volleyball';
+import * as env from '../../env/index.js';
 
-const path = require('path');
-const logMiddleware = require('volleyball');
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootPath = path.join(__dirname, '../../../');
 const indexPath = path.join(rootPath, './public/index.html');
 const faviconPath = path.join(rootPath, './browser/favicon.ico');
 
-const env = require(path.join(rootPath, './server/env'));
-
-module.exports = function (app) {
+export default function (app) {
   app.setValue('env', env);
   app.setValue('projectRoot', rootPath);
   app.setValue('indexHTMLPath', indexPath);
   app.setValue('faviconPath', faviconPath);
-  app.setValue('log', logMiddleware);
-};
+  app.setValue('log', volleyball);
+}

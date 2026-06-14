@@ -1,20 +1,9 @@
-'use strict';
+import { expect } from 'chai';
+import createLyricsRouter from './lyrics.js';
 
-const { expect } = require('chai');
-
-// Stub axios before loading the router so no real HTTP requests are made.
-// The stub object is shared by reference with the loaded router, so
-// individual tests can reassign axiosStub.get to simulate different responses.
-const axiosPath = require.resolve('axios');
 const axiosStub = { get: async () => ({ data: {} }) };
-require.cache[axiosPath] = {
-  id: axiosPath,
-  filename: axiosPath,
-  loaded: true,
-  exports: axiosStub,
-};
+const router = createLyricsRouter(axiosStub);
 
-const router = require('./lyrics');
 const getLyrics = router.stack.find(
   l => l.route && l.route.path === '/:artist/:song' && l.route.methods.get
 ).route.stack[0].handle;

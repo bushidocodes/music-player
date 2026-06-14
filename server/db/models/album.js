@@ -1,11 +1,9 @@
-'use strict';
+import db from '../db.js';
+import unique from './plugins/unique-through.js';
 
-const db = require('../db');
 const DataTypes = db.Sequelize;
-const unique = require('./plugins/unique-through');
 
-module.exports = db.define('album', {
-
+export default db.define('album', {
   name: {
     type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
     allowNull: false,
@@ -14,21 +12,18 @@ module.exports = db.define('album', {
     }
   },
   artists: unique('artists').through('songs')
-
 }, {
-
   scopes: {
-    songIds: () => ({ // function form lets us use to-be-defined models
+    songIds: () => ({
       include: [{
         model: db.model('song'),
         attributes: ['id']
       }]
     }),
-    populated: () => ({ // function form lets us use to-be-defined models
+    populated: () => ({
       include: [{
         model: db.model('song').scope('defaultScope', 'populated')
       }]
     })
   }
-
 });

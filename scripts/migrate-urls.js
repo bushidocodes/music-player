@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-'use strict';
 /**
  * Updates song URLs in the database from dead GCS links to archive.org,
  * and deletes the Jets Overhead tracks (not available on archive.org).
  * Run once after merging fix-sample-media.
  */
 
-const db = require('../server/db/db');
+import db from '../server/db/db.js';
 
 const urlMap = {
   // ── Dexter Britain — Creative Commons Volume 2 ──────────────────────────
@@ -89,7 +88,6 @@ const urlMap = {
 async function run() {
   let updated = 0, deleted = 0, notFound = 0;
 
-  // Update known URLs
   for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
     const [result] = await db.query(
       `UPDATE songs SET url = :newUrl, "updatedAt" = NOW() WHERE url = :oldUrl`,
@@ -99,13 +97,11 @@ async function run() {
     else notFound++;
   }
 
-  // Delete Jets Overhead songs (still have GCS URLs, not archived anywhere)
   const [delResult] = await db.query(
     `DELETE FROM songs WHERE url LIKE '%juke-1379.appspot.com%Jets%Overhead%'`
   );
   deleted = delResult.rowCount;
 
-  // Also clean up orphaned artists/albums if all their songs are gone
   await db.query(`
     DELETE FROM artists WHERE id NOT IN (
       SELECT DISTINCT "artistId" FROM "artistSong"
