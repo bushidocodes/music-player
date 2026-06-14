@@ -1,6 +1,5 @@
-'use strict';
+import db from '../db.js';
 
-const db = require('../db');
 const DataTypes = db.Sequelize;
 
 const Song = db.define('song', {
@@ -39,4 +38,4 @@ Song.prototype.toJSON = function toJSON() {
   return plain;
 };
 
-module.exports = Song;
+export default Song;

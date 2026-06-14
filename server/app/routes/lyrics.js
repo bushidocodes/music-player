@@ -1,19 +1,20 @@
-'use strict';
-
-const express = require('express');
-const router = new express.Router();
-const axios = require('axios');
-module.exports = router;
+import express from 'express';
 
 const lyricsAPIPrefix = 'https://api.lyrics.ovh/v1';
 
-router.get('/:artist/:song', async (req, res, next) => {
-  try {
-    const url = `${lyricsAPIPrefix}/${encodeURIComponent(req.params.artist)}/${encodeURIComponent(req.params.song)}`;
-    const response = await axios.get(url);
-    const lyric = response.data?.lyrics ?? null;
-    res.send({ lyric });
-  } catch (err) {
-    next(err);
-  }
-});
+export default function createLyricsRouter(axios) {
+  const router = new express.Router();
+
+  router.get('/:artist/:song', async (req, res, next) => {
+    try {
+      const url = `${lyricsAPIPrefix}/${encodeURIComponent(req.params.artist)}/${encodeURIComponent(req.params.song)}`;
+      const response = await axios.get(url);
+      const lyric = response.data?.lyrics ?? null;
+      res.send({ lyric });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  return router;
+}

@@ -1,35 +1,24 @@
-'use strict';
+import { expect } from 'chai';
+import createPlaylistsRouter from './playlists.js';
 
-const { expect } = require('chai');
-
-// Stub db/models before loading the router so no DB connection is attempted.
-// id '0' → not found (404 path); any other id → found
-const modelsPath = require.resolve('../../db/models');
-require.cache[modelsPath] = {
-  id: modelsPath,
-  filename: modelsPath,
-  loaded: true,
-  exports: {
-    Playlist: {
-      findAll: async () => [],
-      create: async data => ({ id: 1, ...data }),
-      scope: () => ({
-        findByPk: async id =>
-          id == 0 ? null : {
-            id: Number(id),
-            name: 'Test Playlist',
-            songs: [{ id: 10, title: 'Song A' }],
-            update: async data => ({ id: 1, ...data }),
-            destroy: async () => {},
-            addAndReturnSong: async songId => ({ id: songId }),
-            removeSong: async () => {},
-          },
-      }),
-    },
-  },
+const mockPlaylist = {
+  findAll: async () => [],
+  create: async data => ({ id: 1, ...data }),
+  scope: () => ({
+    findByPk: async id =>
+      id == 0 ? null : {
+        id: Number(id),
+        name: 'Test Playlist',
+        songs: [{ id: 10, title: 'Song A' }],
+        update: async data => ({ id: 1, ...data }),
+        destroy: async () => {},
+        addAndReturnSong: async songId => ({ id: songId }),
+        removeSong: async () => {},
+      },
+  }),
 };
 
-const router = require('./playlists');
+const router = createPlaylistsRouter(mockPlaylist);
 
 function handler(method, path) {
   const layer = router.stack.find(

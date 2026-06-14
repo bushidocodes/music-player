@@ -1,8 +1,6 @@
-'use strict';
+import express from 'express';
 
-const express = require('express');
-
-module.exports = function (app) {
+export default function (app) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-};
+}

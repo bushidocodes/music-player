@@ -1,13 +1,14 @@
 #!/usr/bin/env node
-'use strict';
 /**
  * Replaces dead GCS URLs in music.xml with working archive.org URLs
  * and removes the 10 Jets Overhead tracks (not archived anywhere).
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const xmlPath = path.join(__dirname, '..', 'music.xml');
 let xml = fs.readFileSync(xmlPath, 'utf8');
 
@@ -82,10 +83,8 @@ for (const [oldFile, newFile] of slip) {
 }
 
 // ── Remove Jets Overhead tracks (not archived anywhere) ──────────────────────
-// Track IDs 7836, 7839, 7842, 7845, 7848, 7851, 7854, 7857, 7860, 7863
 const jetsIds = ['7836','7839','7842','7845','7848','7851','7854','7857','7860','7863'];
 for (const id of jetsIds) {
-  // File uses CRLF (\r\n); match each <key>ID</key><dict>...</dict> block
   const re = new RegExp(`\\t\\t<key>${id}<\\/key>\\r?\\n\\t\\t<dict>[\\s\\S]*?\\t\\t<\\/dict>\\r?\\n`);
   xml = xml.replace(re, '');
 }

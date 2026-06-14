@@ -1,31 +1,21 @@
-'use strict';
-/* eslint-disable global-require */
+import chalk from 'chalk';
+import http from 'http';
+import app from './app/index.js';
+import startDb from './db/index.js';
 
-const chalk = require('chalk');
-
-// Requires in ./db/index.js -- which returns a promise that represents
-// sequelize syncing its models to the postgreSQL database.
-const startDb = require('./db');
-
-// Create a node server instance! cOoL!
-const server = require('http').createServer();
-
-const createApplication = () => {
-    const app = require('./app');
-    server.on('request', app); // Attach the Express application.
-};
+const server = http.createServer();
 
 const startServer = () => {
-    const PORT = process.env.PORT || 1337;
-    server.listen(PORT, () => {
-        console.log(chalk.blue('Server started on port', chalk.magenta(PORT)));
-    });
+  const PORT = process.env.PORT || 1337;
+  server.listen(PORT, () => {
+    console.log(chalk.blue('Server started on port', chalk.magenta(PORT)));
+  });
 };
 
 startDb
-    .then(createApplication)
-    .then(startServer)
-    .catch(err => {
-        console.error(chalk.red(err.stack));
-        process.exit(1);
-    });
+  .then(() => { server.on('request', app); })
+  .then(startServer)
+  .catch(err => {
+    console.error(chalk.red(err.stack));
+    process.exit(1);
+  });

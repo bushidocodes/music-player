@@ -1,9 +1,10 @@
-'use strict';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-module.exports = {
+export default {
   mode: 'development',
   entry: './browser/react/index.js',
   output: {
@@ -18,6 +19,7 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: 'babel-loader',
+        resolve: { fullySpecified: false },
       },
     ],
   },
