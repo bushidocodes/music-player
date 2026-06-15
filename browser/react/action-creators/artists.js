@@ -1,5 +1,5 @@
 import {RECEIVE_ARTISTS, RECEIVE_ARTIST} from '../constants';
-import axios from 'axios';
+import { apiFetch } from '../utils';
 
 export const receiveArtists = artists => ({
   type: RECEIVE_ARTISTS,
@@ -15,12 +15,12 @@ export const receiveArtist = (artist, albums, songs) => ({
 
 export const getArtistById = artistId => async dispatch => {
   try {
-    const [artistRes, albumsRes, songsRes] = await Promise.all([
-      axios.get(`/api/artists/${artistId}`),
-      axios.get(`/api/artists/${artistId}/albums`),
-      axios.get(`/api/artists/${artistId}/songs`),
+    const [artist, albums, songs] = await Promise.all([
+      apiFetch(`/api/artists/${artistId}`),
+      apiFetch(`/api/artists/${artistId}/albums`),
+      apiFetch(`/api/artists/${artistId}/songs`),
     ]);
-    dispatch(receiveArtist(artistRes.data, albumsRes.data, songsRes.data));
+    dispatch(receiveArtist(artist, albums, songs));
   } catch (err) {
     console.error('Failed to load artist:', err);
   }

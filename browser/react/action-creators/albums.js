@@ -1,5 +1,5 @@
 import { RECEIVE_ALBUMS, RECEIVE_ALBUM } from '../constants';
-import axios from 'axios';
+import { apiFetch } from '../utils';
 
 export const receiveAlbums = albums => ({
     type: RECEIVE_ALBUMS,
@@ -13,7 +13,7 @@ export const receiveAlbum = album => ({
 
 export const getAlbumById = albumId => async dispatch => {
   try {
-    const { data } = await axios.get(`/api/albums/${albumId}`);
+    const data = await apiFetch(`/api/albums/${albumId}`);
     dispatch(receiveAlbum(data));
   } catch (err) {
     console.error('Failed to load album:', err);

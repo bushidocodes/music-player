@@ -1,3 +1,13 @@
+export async function apiFetch(url, options = {}) {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json', ...options.headers },
+    ...options,
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json();
+}
+
 export const convertSong = (song) => {
   return { ...song, audioUrl: `/api/songs/${song.id}/audio` };
 };

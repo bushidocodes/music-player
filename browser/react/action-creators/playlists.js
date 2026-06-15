@@ -4,9 +4,7 @@ import {
   RECEIVE_SONGS
 } from '../constants';
 
-import axios from 'axios';
-
-import {convertSong} from '../utils';
+import {convertSong, apiFetch} from '../utils';
 
 export const receivePlaylists = playlists => ({
   type: RECEIVE_PLAYLISTS,
@@ -25,7 +23,7 @@ export const receiveAllSongs = songs => ({
 
 export const getPlaylistById = playlistId => async dispatch => {
   try {
-    const { data } = await axios.get(`/api/playlists/${playlistId}`);
+    const data = await apiFetch(`/api/playlists/${playlistId}`);
     dispatch(receivePlaylist(data));
   } catch (err) {
     console.error('Failed to load playlist:', err);
@@ -34,7 +32,7 @@ export const getPlaylistById = playlistId => async dispatch => {
 
 export const addNewPlaylist = (playlistName, navigate) => async (dispatch, getState) => {
   try {
-    const { data: playlist } = await axios.post('/api/playlists', { name: playlistName });
+    const playlist = await apiFetch('/api/playlists', { method: 'POST', body: { name: playlistName } });
     const newListOfPlaylists = [...getState().playlists.list, playlist];
     dispatch(receivePlaylists(newListOfPlaylists));
     navigate(`/playlists/${playlist.id}`);
@@ -45,7 +43,7 @@ export const addNewPlaylist = (playlistName, navigate) => async (dispatch, getSt
 
 export const loadAllSongs = () => async dispatch => {
   try {
-    const { data } = await axios.get('/api/songs');
+    const data = await apiFetch('/api/songs');
     dispatch(receiveAllSongs(data));
   } catch (err) {
     console.error('Failed to load songs:', err);
@@ -53,7 +51,7 @@ export const loadAllSongs = () => async dispatch => {
 };
 
 export const addSongToPlaylist = (playlistId, songId) => async (dispatch, getState) => {
-  const { data: song } = await axios.post(`/api/playlists/${playlistId}/songs`, { id: songId });
+  const song = await apiFetch(`/api/playlists/${playlistId}/songs`, { method: 'POST', body: { id: songId } });
   const selectedPlaylist = getState().playlists.selected;
   dispatch(receivePlaylist({
     ...selectedPlaylist,

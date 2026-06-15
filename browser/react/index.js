@@ -20,8 +20,8 @@ import App from './components/App';
 import Albums from './components/Albums';
 import Songs from './components/Songs';
 
-import axios from 'axios';
 import store from './store';
+import { apiFetch } from './utils';
 import { receiveAlbums, getAlbumById } from './action-creators/albums';
 import { receiveArtists, getArtistById } from './action-creators/artists';
 import { receivePlaylists, getPlaylistById, loadAllSongs } from './action-creators/playlists';
@@ -30,14 +30,14 @@ function AppWrapper() {
   useEffect(() => {
     async function loadInitialData() {
       try {
-        const [albumsRes, artistsRes, playlistsRes] = await Promise.all([
-          axios.get('/api/albums'),
-          axios.get('/api/artists'),
-          axios.get('/api/playlists'),
+        const [albums, artists, playlists] = await Promise.all([
+          apiFetch('/api/albums'),
+          apiFetch('/api/artists'),
+          apiFetch('/api/playlists'),
         ]);
-        store.dispatch(receiveAlbums(albumsRes.data));
-        store.dispatch(receiveArtists(artistsRes.data));
-        store.dispatch(receivePlaylists(playlistsRes.data));
+        store.dispatch(receiveAlbums(albums));
+        store.dispatch(receiveArtists(artists));
+        store.dispatch(receivePlaylists(playlists));
       } catch (err) {
         console.error('Failed to load app data:', err);
       }

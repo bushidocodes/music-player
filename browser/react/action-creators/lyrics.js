@@ -1,5 +1,5 @@
 import {SET_LYRICS} from '../constants';
-import axios from 'axios';
+import { apiFetch } from '../utils';
 
 export const setLyrics = text => ({
   type: SET_LYRICS,
@@ -8,7 +8,7 @@ export const setLyrics = text => ({
 
 export const searchLyrics = (artist, song) => async dispatch => {
   try {
-    const { data } = await axios.get(`/api/lyrics/${artist}/${song}`);
+    const data = await apiFetch(`/api/lyrics/${artist}/${song}`);
     dispatch(setLyrics(data.lyric));
   } catch (err) {
     console.error('Failed to load lyrics:', err);
