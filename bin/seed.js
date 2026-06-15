@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { fileURLToPath } from 'url';
-import status from 'node-status';
 import path from 'path';
 import fs from 'fs';
 import { parsePlist } from './plist.js';
@@ -18,8 +17,23 @@ function promiseProps(obj) {
 }
 
 const KEY = Symbol('key');
-const TRACKS = Symbol('TRACKS');
 const DEFAULT_TRACK_LIMIT = 500;
+
+const counts = { total: 0, skipped: 0, seeding: 0, seeded: 0 };
+let progressInterval = null;
+
+function startProgress() {
+  progressInterval = setInterval(() => {
+    process.stdout.write(
+      `\rXML tracks — total: ${counts.total}  skipped: ${counts.skipped}  seeding: ${counts.seeding}  seeded: ${counts.seeded}  `
+    );
+  }, 125);
+}
+
+function stopProgress() {
+  clearInterval(progressInterval);
+  process.stdout.write('\n');
+}
 
 program
   .usage('[options]')
@@ -28,24 +42,19 @@ program
   .option('-L, --limit <num>', `Limit total tracks imported to <num> (default ${DEFAULT_TRACK_LIMIT})`, parseInt)
   .option('-u, --unlimited', 'Import unlimited tracks');
 
+let trackLimit;
+
 function main() {
   program.parse(process.argv);
   const opts = program.opts();
 
-  status[TRACKS] = {
-    total: status.addItem('total', {color: 'magenta'}),
-    skipped: status.addItem('skipped', {color: 'yellow'}),
-    seeding: status.addItem('seeding', {color: 'green'}),
-    seeded: status.addItem('seeded', {color: 'blue'})
-  };
-  status.start({ label: 'XML tracks', invert: false, interval: 125 });
-
-  program[TRACKS] = opts.unlimited ? Infinity : opts.limit || DEFAULT_TRACK_LIMIT;
+  trackLimit = opts.unlimited ? Infinity : opts.limit || DEFAULT_TRACK_LIMIT;
+  startProgress();
 
   db.sync({ force: opts.force })
     .then(() => importLibrary(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'music.xml')))
     .finally(() => {
-      status.stop();
+      stopProgress();
       db.close(); // else Sequelize keeps open ~10 secs, anticipating queries
     });
 }
@@ -69,10 +78,10 @@ function importLibrary(xmlPath) {
   for (const id of Object.keys(tracksById)) {
     const data = tracksById[id];
 
-    status[TRACKS].total.inc(1);
+    counts.total++;
 
     if (
-      (status[TRACKS].seeding.count >= program[TRACKS]) ||
+      (counts.seeding >= trackLimit) ||
       !data.Location ||
       !data.Name ||
       !data.Artist ||
@@ -81,11 +90,11 @@ function importLibrary(xmlPath) {
       (data.Kind && data.Kind.indexOf('Apple Lossless') !== -1) ||
       (data.Kind && data.Kind.indexOf('app') !== -1)
     ) {
-      status[TRACKS].skipped.inc(1);
+      counts.skipped++;
       continue;
     }
 
-    status[TRACKS].seeding.inc(1);
+    counts.seeding++;
 
     const seeding = ArtistSong({
       artistId: Artist({name: data.Artist || data['Album Artist'] || 'Unknown artist'}),
@@ -101,7 +110,7 @@ function importLibrary(xmlPath) {
     });
 
     tracks.push(seeding);
-    seeding.then(() => status[TRACKS].seeded.inc(1));
+    seeding.then(() => counts.seeded++);
   }
 
   return Promise.all(tracks);
