@@ -41,6 +41,11 @@ describe('unique (deep: String) through (near: String)', () => {
       expect(result).to.eql([]);
     });
 
+    it('returns [] when the through association is not loaded', () => {
+      const result = def.get.apply({});
+      expect(result).to.eql([]);
+    });
+
     it('caches results', () => {
       const spy = {
         getSongsCalled: 0,
