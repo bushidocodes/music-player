@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import Sequelize from 'sequelize';
-import _ from 'lodash';
 import unique from './unique-through.js';
 
 describe('unique (deep: String) through (near: String)', () => {
@@ -34,7 +33,7 @@ describe('unique (deep: String) through (near: String)', () => {
           {title: 'Bad Reputation', artists: [miley, joanJett]}
         ]
       });
-      expect(_.sortBy(uniqueArtists, artist => artist.id)).to.eql(allArtists);
+      expect([...uniqueArtists].sort((a, b) => a.id - b.id)).to.eql(allArtists);
     });
 
     it('returns [] when the through model has no entries', () => {
