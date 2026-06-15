@@ -7,8 +7,8 @@
   "scripts": {
     "start": "vite & node --watch --watch-path=server server/start.js",
     "build": "vite build",
-    "test": "mocha server/**/*.test.js --reporter spec",
-    "test:coverage": "c8 mocha server/**/*.test.js --reporter spec",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint browser/react server",
     "seed": "node ./bin/seed.js",
     "db-init": "pg-init juke"
@@ -35,13 +35,12 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.0",
     "@vitejs/plugin-react": "^6.0.2",
-    "c8": "^11.0.0",
-    "chai": "^5.1.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "commander": "^15.0.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.6.0",
-    "mocha": "^11.7.6",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
   }
 }

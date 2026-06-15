@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import createArtistsRouter from './artists.js';
 
 const mockArtist = {
@@ -22,17 +22,17 @@ describe('Artist param handler', () => {
     const req = {};
     let err;
     await artistParam(req, {}, e => { err = e; }, '0');
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(404);
-    expect(err.message).to.equal('Artist not found');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(404);
+    expect(err.message).toBe('Artist not found');
   });
 
   it('attaches the artist to req and calls next when found', async () => {
     const req = {};
     let nextCalled = false;
     await artistParam(req, {}, () => { nextCalled = true; }, '1');
-    expect(req.artist).to.include({ id: 1, name: 'Test Artist' });
-    expect(nextCalled).to.be.true;
+    expect(req.artist).toMatchObject({ id: 1, name: 'Test Artist' });
+    expect(nextCalled).toBe(true);
   });
 });
 
@@ -44,7 +44,7 @@ describe('GET /api/artists/:artistId/albums', () => {
     const req = { artist: { getAlbums: async () => albums } };
     let body;
     await getArtistAlbums(req, { json: b => { body = b; } }, () => {});
-    expect(body).to.equal(albums);
+    expect(body).toBe(albums);
   });
 
   it('forwards database errors to the error handler', async () => {
@@ -52,7 +52,7 @@ describe('GET /api/artists/:artistId/albums', () => {
     const req = { artist: { getAlbums: async () => { throw dbErr; } } };
     let err;
     await getArtistAlbums(req, {}, e => { err = e; });
-    expect(err).to.equal(dbErr);
+    expect(err).toBe(dbErr);
   });
 });
 
@@ -64,7 +64,7 @@ describe('GET /api/artists/:artistId/songs', () => {
     const req = { artist: { getSongs: async () => songs } };
     let body;
     await getArtistSongs(req, { json: b => { body = b; } }, () => {});
-    expect(body).to.equal(songs);
+    expect(body).toBe(songs);
   });
 
   it('forwards database errors to the error handler', async () => {
@@ -72,6 +72,6 @@ describe('GET /api/artists/:artistId/songs', () => {
     const req = { artist: { getSongs: async () => { throw dbErr; } } };
     let err;
     await getArtistSongs(req, {}, e => { err = e; });
-    expect(err).to.equal(dbErr);
+    expect(err).toBe(dbErr);
   });
 });

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import createSongsRouter from './songs.js';
 
 const mockSong = {
@@ -25,17 +25,17 @@ describe('Song param handler', () => {
     const req = {};
     let err;
     await songParam(req, {}, e => { err = e; }, '0');
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(404);
-    expect(err.message).to.equal('Song not found');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(404);
+    expect(err.message).toBe('Song not found');
   });
 
   it('attaches the song to req and calls next when found', async () => {
     const req = {};
     let nextCalled = false;
     await songParam(req, {}, () => { nextCalled = true; }, '1');
-    expect(req.song).to.include({ id: 1 });
-    expect(nextCalled).to.be.true;
+    expect(req.song).toMatchObject({ id: 1 });
+    expect(nextCalled).toBe(true);
   });
 });
 
@@ -47,7 +47,7 @@ describe('GET /api/songs/:songId/audio', () => {
     let redirectUrl;
     const res = { redirect: url => { redirectUrl = url; } };
     getAudio(req, res);
-    expect(redirectUrl).to.equal('https://example.com/song.mp3');
+    expect(redirectUrl).toBe('https://example.com/song.mp3');
   });
 
   it('calls sendFile with the decoded local path for file:// songs', () => {
@@ -55,6 +55,6 @@ describe('GET /api/songs/:songId/audio', () => {
     let sentPath;
     const res = { sendFile: p => { sentPath = p; } };
     getAudio(req, res);
-    expect(sentPath).to.equal('/home/user/music/song.mp3');
+    expect(sentPath).toBe('/home/user/music/song.mp3');
   });
 });

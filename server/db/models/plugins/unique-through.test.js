@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import Sequelize from 'sequelize';
 import unique from './unique-through.js';
 
@@ -6,9 +6,9 @@ describe('unique (deep: String) through (near: String)', () => {
   const def = unique('artists').through('songs');
 
   it('provides a Sequelize virtual column definition', () => {
-    expect(def).to.be.an('object');
-    expect(def.type).to.equal(Sequelize.VIRTUAL);
-    expect(def.get).to.be.a('function');
+    expect(typeof def).toBe('object');
+    expect(def.type).toBe(Sequelize.VIRTUAL);
+    expect(typeof def.get).toBe('function');
   });
 
   describe('defines a getter', () => {
@@ -33,17 +33,17 @@ describe('unique (deep: String) through (near: String)', () => {
           {title: 'Bad Reputation', artists: [miley, joanJett]}
         ]
       });
-      expect([...uniqueArtists].sort((a, b) => a.id - b.id)).to.eql(allArtists);
+      expect([...uniqueArtists].sort((a, b) => a.id - b.id)).toEqual(allArtists);
     });
 
     it('returns [] when the through model has no entries', () => {
       const result = def.get.apply({ songs: [] });
-      expect(result).to.eql([]);
+      expect(result).toEqual([]);
     });
 
     it('returns [] when the through association is not loaded', () => {
       const result = def.get.apply({});
-      expect(result).to.eql([]);
+      expect(result).toEqual([]);
     });
 
     it('caches results', () => {
@@ -59,7 +59,7 @@ describe('unique (deep: String) through (near: String)', () => {
       };
       def.get.apply(spy);
       def.get.apply(spy);
-      expect(spy.getSongsCalled).to.equal(1);
+      expect(spy.getSongsCalled).toBe(1);
     });
   });
 });
