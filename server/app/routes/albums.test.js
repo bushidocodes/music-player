@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import createAlbumsRouter from './albums.js';
 
 const mockAlbum = {
@@ -25,17 +25,17 @@ describe('Album param handler', () => {
     const req = {};
     let err;
     await albumParam(req, {}, e => { err = e; }, '0');
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(404);
-    expect(err.message).to.equal('Album not found');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(404);
+    expect(err.message).toBe('Album not found');
   });
 
   it('attaches the album to req and calls next when found', async () => {
     const req = {};
     let nextCalled = false;
     await albumParam(req, {}, () => { nextCalled = true; }, '1');
-    expect(req.album).to.include({ id: 1 });
-    expect(nextCalled).to.be.true;
+    expect(req.album).toMatchObject({ id: 1 });
+    expect(nextCalled).toBe(true);
   });
 });
 
@@ -46,9 +46,9 @@ describe('GET /api/albums/:albumId/image', () => {
     const req = { album: { songs: [] } };
     let err;
     getAlbumImage(req, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(404);
-    expect(err.message).to.equal('Album has no songs');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(404);
+    expect(err.message).toBe('Album has no songs');
   });
 
   it('redirects to the first song image when songs are present', () => {
@@ -56,7 +56,7 @@ describe('GET /api/albums/:albumId/image', () => {
     let redirectUrl;
     const res = { redirect: url => { redirectUrl = url; } };
     getAlbumImage(req, res, () => {});
-    expect(redirectUrl).to.equal('/api/songs/42/image');
+    expect(redirectUrl).toBe('/api/songs/42/image');
   });
 });
 
@@ -68,7 +68,7 @@ describe('GET /api/albums/:albumId/songs/:songId', () => {
     let status;
     const res = { sendStatus: s => { status = s; }, json: () => {} };
     getAlbumSong(req, res);
-    expect(status).to.equal(404);
+    expect(status).toBe(404);
   });
 
   it('responds with the song when found', () => {
@@ -77,6 +77,6 @@ describe('GET /api/albums/:albumId/songs/:songId', () => {
     let body;
     const res = { sendStatus: () => {}, json: b => { body = b; } };
     getAlbumSong(req, res);
-    expect(body).to.equal(song);
+    expect(body).toBe(song);
   });
 });

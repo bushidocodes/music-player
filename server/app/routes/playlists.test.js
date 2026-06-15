@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import createPlaylistsRouter from './playlists.js';
 
 const mockPlaylist = {
@@ -34,17 +34,17 @@ describe('Playlist param handler', () => {
     const req = {};
     let err;
     await playlistParam(req, {}, e => { err = e; }, '0');
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(404);
-    expect(err.message).to.equal('Playlist not found');
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(404);
+    expect(err.message).toBe('Playlist not found');
   });
 
   it('attaches the playlist to req and calls next when found', async () => {
     const req = {};
     let nextCalled = false;
     await playlistParam(req, {}, () => { nextCalled = true; }, '1');
-    expect(req.playlist).to.include({ id: 1 });
-    expect(nextCalled).to.be.true;
+    expect(req.playlist).toMatchObject({ id: 1 });
+    expect(nextCalled).toBe(true);
   });
 });
 
@@ -54,23 +54,23 @@ describe('POST /api/playlists', () => {
   it('passes a 400 error to next when name is missing', async () => {
     let err;
     await createPlaylist({ body: {} }, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(400);
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(400);
   });
 
   it('passes a 400 error to next when name is blank', async () => {
     let err;
     await createPlaylist({ body: { name: '   ' } }, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(400);
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(400);
   });
 
   it('responds 201 with the new playlist when name is valid', async () => {
     let status, body;
     const res = { status: s => { status = s; return res; }, json: b => { body = b; } };
     await createPlaylist({ body: { name: 'Road Trip' } }, res, () => {});
-    expect(status).to.equal(201);
-    expect(body).to.include({ name: 'Road Trip' });
+    expect(status).toBe(201);
+    expect(body).toMatchObject({ name: 'Road Trip' });
   });
 });
 
@@ -80,15 +80,15 @@ describe('PUT /api/playlists/:playlistId', () => {
   it('passes a 400 error to next when name is missing', async () => {
     let err;
     await updatePlaylist({ body: {}, playlist: {} }, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(400);
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(400);
   });
 
   it('passes a 400 error to next when name is blank', async () => {
     let err;
     await updatePlaylist({ body: { name: '  ' }, playlist: {} }, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.status).to.equal(400);
+    expect(err).toBeInstanceOf(Error);
+    expect(err.status).toBe(400);
   });
 });
 
@@ -100,7 +100,7 @@ describe('GET /api/playlists/:playlistId/songs/:songId', () => {
     const req = { playlist: { songs: [{ id: 1 }] }, params: { songId: '999' } };
     const res = { sendStatus: s => { status = s; }, json: () => {} };
     getSong(req, res);
-    expect(status).to.equal(404);
+    expect(status).toBe(404);
   });
 
   it('responds with the song when found', () => {
@@ -109,7 +109,7 @@ describe('GET /api/playlists/:playlistId/songs/:songId', () => {
     const req = { playlist: { songs: [song] }, params: { songId: '1' } };
     const res = { sendStatus: () => {}, json: b => { body = b; } };
     getSong(req, res);
-    expect(body).to.equal(song);
+    expect(body).toBe(song);
   });
 });
 
@@ -119,9 +119,9 @@ describe('POST /api/playlists/:playlistId/songs', () => {
   it('passes a 400 error to next when body contains neither id nor song', async () => {
     let err;
     await addSong({ body: {} }, {}, e => { err = e; });
-    expect(err).to.be.instanceOf(Error);
-    expect(err.message).to.equal('Request body must include either id or song');
-    expect(err.status).to.equal(400);
+    expect(err).toBeInstanceOf(Error);
+    expect(err.message).toBe('Request body must include either id or song');
+    expect(err.status).toBe(400);
   });
 
   it('does not call next with an error when body includes id', async () => {
@@ -132,7 +132,7 @@ describe('POST /api/playlists/:playlistId/songs', () => {
     const res = { status: () => res, json: () => {} };
     let err;
     await addSong(req, res, e => { err = e; });
-    expect(err).to.be.undefined;
+    expect(err).toBeUndefined();
   });
 
   it('does not call next with an error when body includes song', async () => {
@@ -143,7 +143,7 @@ describe('POST /api/playlists/:playlistId/songs', () => {
     const res = { status: () => res, json: () => {} };
     let err;
     await addSong(req, res, e => { err = e; });
-    expect(err).to.be.undefined;
+    expect(err).toBeUndefined();
   });
 
   it('responds 409 when the song is already in the playlist', async () => {
@@ -157,7 +157,7 @@ describe('POST /api/playlists/:playlistId/songs', () => {
     let status, body;
     const res = { status: s => { status = s; return res; }, send: b => { body = b; } };
     await addSong(req, res, () => {});
-    expect(status).to.equal(409);
-    expect(body).to.equal('Song is already in the playlist.');
+    expect(status).toBe(409);
+    expect(body).toBe('Song is already in the playlist.');
   });
 });

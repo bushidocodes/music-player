@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import createLyricsRouter from './lyrics.js';
 
 const axiosStub = { get: async () => ({ data: {} }) };
@@ -14,7 +14,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
     const req = { params: { artist: 'Adele', song: 'Hello' } };
     let sent;
     await getLyrics(req, { send: b => { sent = b; } }, () => {});
-    expect(sent).to.deep.equal({ lyric: 'Hello from the other side' });
+    expect(sent).toEqual({ lyric: 'Hello from the other side' });
   });
 
   it('returns null lyric when the API response has no lyrics field', async () => {
@@ -22,7 +22,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
     const req = { params: { artist: 'Unknown', song: 'Unknown' } };
     let sent;
     await getLyrics(req, { send: b => { sent = b; } }, () => {});
-    expect(sent).to.deep.equal({ lyric: null });
+    expect(sent).toEqual({ lyric: null });
   });
 
   it('forwards API errors to the error handler', async () => {
@@ -31,7 +31,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
     const req = { params: { artist: 'Adele', song: 'Hello' } };
     let err;
     await getLyrics(req, {}, e => { err = e; });
-    expect(err).to.equal(apiErr);
+    expect(err).toBe(apiErr);
   });
 
   it('URL-encodes special characters in the artist and song names', async () => {
@@ -39,7 +39,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
     axiosStub.get = async url => { capturedUrl = url; return { data: { lyrics: '' } }; };
     const req = { params: { artist: 'AC/DC', song: 'Back in Black' } };
     await getLyrics(req, { send: () => {} }, () => {});
-    expect(capturedUrl).to.include('AC%2FDC');
-    expect(capturedUrl).to.include('Back%20in%20Black');
+    expect(capturedUrl).toContain('AC%2FDC');
+    expect(capturedUrl).toContain('Back%20in%20Black');
   });
 });
