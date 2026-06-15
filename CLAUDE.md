@@ -9,7 +9,6 @@ npm install          # Install dependencies
 npm run seed         # Seed database with music.xml / iTunes library data
 npm start            # Start dev server (Webpack watch + Nodemon on port 1337)
 npm test             # Run server-side tests
-npm run test:player  # Run browser/player tests
 ```
 
 PostgreSQL must be running with trust auth for local connections and a role matching your OS username. See README.md for setup steps.

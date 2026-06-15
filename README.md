@@ -35,7 +35,6 @@ npm start            # webpack watch + nodemon on port 1337
 | `npm run seed -- --force` | Re-seed, dropping existing data |
 | `npm run seed -- --unlimited` | Import all tracks from `music.xml` (default cap: 500 tracks) |
 | `npm test` | Server-side Mocha tests |
-| `npm run test:player` | Browser/player tests via Testem |
 
 ## Node 24 compatibility
 
