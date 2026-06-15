@@ -9,7 +9,9 @@ export default function unique(deepColumn) {
           const key = `._unique_${deepColumn}_through_${nearColumn}_`;
           if (this[key]) return this[key];
           const seen = new Set();
-          const collection = this[nearColumn]
+          // The through association may not be eager-loaded (e.g. a plain
+          // findAll), leaving this[nearColumn] undefined; treat it as empty.
+          const collection = (this[nearColumn] || [])
             .flatMap(obj => obj[deepColumn])
             .filter(item => item !== null && typeof item === 'object')
             .filter(model => !seen.has(model.id) && seen.add(model.id));
