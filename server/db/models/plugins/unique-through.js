@@ -1,5 +1,4 @@
 import Sequelize from 'sequelize';
-import _ from 'lodash';
 
 export default function unique(deepColumn) {
   return {
@@ -9,11 +8,11 @@ export default function unique(deepColumn) {
         get() {
           const key = `._unique_${deepColumn}_through_${nearColumn}_`;
           if (this[key]) return this[key];
-          const collection = _.chain(this[nearColumn])
+          const seen = new Set();
+          const collection = this[nearColumn]
             .flatMap(obj => obj[deepColumn])
-            .filter(_.isObject)
-            .uniqBy(model => model.id)
-            .value();
+            .filter(item => item !== null && typeof item === 'object')
+            .filter(model => !seen.has(model.id) && seen.add(model.id));
           if (!collection.length) return this[key] = [];
           return this[key] = collection;
         }
