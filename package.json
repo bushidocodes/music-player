@@ -5,8 +5,8 @@
   "type": "module",
   "main": "server/start.js",
   "scripts": {
-    "start": "webpack serve & node --watch --watch-path=server server/start.js",
-    "build": "webpack --mode=production",
+    "start": "vite & node --watch --watch-path=server server/start.js",
+    "build": "vite build",
     "test": "mocha server/**/*.test.js --reporter spec",
     "test:coverage": "c8 mocha server/**/*.test.js --reporter spec",
     "test:player": "node_modules/.bin/testem",
@@ -35,18 +35,15 @@
     "@babel/eslint-parser": "^7.29.7",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.0",
-    "babel-loader": "^9.2.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "c8": "^11.0.0",
     "chai": "^5.1.2",
     "commander": "^15.0.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.6.0",
-    "html-webpack-plugin": "^5.6.3",
     "mocha": "^11.7.6",
     "testem": "^3.20.1",
-    "webpack": "^5.107.2",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.1"
+    "vite": "^8.0.16"
   }
 }

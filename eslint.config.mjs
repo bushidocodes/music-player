@@ -4,6 +4,8 @@ import globals from "globals";
 import babelParser from "@babel/eslint-parser";
 
 export default defineConfig([{
+    files: ["**/*.js", "**/*.jsx"],
+
     plugins: {
         react,
     },
