@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import volleyball from 'volleyball';
+import morgan from 'morgan';
 import * as env from '../../env/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -13,5 +13,5 @@ export default function (app) {
   app.setValue('projectRoot', rootPath);
   app.setValue('indexHTMLPath', indexPath);
   app.setValue('faviconPath', faviconPath);
-  app.setValue('log', volleyball);
+  app.setValue('log', morgan('dev'));
 }
