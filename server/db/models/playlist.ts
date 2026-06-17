@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
+import type { Model } from 'sequelize';
 import db from '../db.js';
 import unique from './plugins/unique-through.js';
+import { toJSONWithoutSongUrls } from './serialize.js';
 
 const Playlist = db.define('playlist', {
   name: {
@@ -28,6 +30,11 @@ const Playlist = db.define('playlist', {
     db.model('song').scope(['defaultScope', 'populated']).findByPk(songId),
   ]);
   return song;
+};
+
+// Serialize nested songs through Song#toJSON so `url` is never exposed.
+Playlist.prototype.toJSON = function toJSON(this: Model) {
+  return toJSONWithoutSongUrls(this);
 };
 
 export default Playlist;

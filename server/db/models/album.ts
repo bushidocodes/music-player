@@ -1,8 +1,10 @@
 import { DataTypes } from 'sequelize';
+import type { Model } from 'sequelize';
 import db from '../db.js';
 import unique from './plugins/unique-through.js';
+import { toJSONWithoutSongUrls } from './serialize.js';
 
-export default db.define('album', {
+const Album = db.define('album', {
   name: {
     type: DataTypes.STRING(1e4),
     allowNull: false,
@@ -26,3 +28,11 @@ export default db.define('album', {
     })
   }
 });
+
+// Serialize nested songs through Song#toJSON so `url` is never exposed (the
+// default toJSON would plain them straight from dataValues, leaking it).
+Album.prototype.toJSON = function toJSON(this: Model) {
+  return toJSONWithoutSongUrls(this);
+};
+
+export default Album;
