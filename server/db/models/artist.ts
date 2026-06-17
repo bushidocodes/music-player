@@ -1,19 +1,19 @@
+import { DataTypes } from 'sequelize';
 import db from '../db.js';
-
-const DataTypes = db.Sequelize;
 
 const Artist = db.define('artist', {
   name: {
-    type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
+    type: DataTypes.STRING(1e4),
     allowNull: false,
-    set(val) {
-      this.setDataValue('name', val.trim());
+    set(val: unknown) {
+      this.setDataValue('name', String(val).trim());
     }
   }
 });
 
-Artist.prototype.getAlbums = async function () {
-  return db.model('album').scope('defaultScope', 'populated').findAll({
+// getAlbums is a custom finder, not a standard Sequelize association mixin.
+(Artist.prototype as any).getAlbums = async function (this: { id: number }) {
+  return db.model('album').scope(['defaultScope', 'populated']).findAll({
     include: [{
       model: db.model('song'),
       include: [{

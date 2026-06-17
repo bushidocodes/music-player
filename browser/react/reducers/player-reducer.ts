@@ -5,15 +5,19 @@ import {
   SET_LIST,
   SET_PROGRESS
 } from '../constants';
+import type { PlayerState, AppAction } from '../types';
 
-export const initialPlayerState = {
+export const initialPlayerState: PlayerState = {
   currentSong: {},
   currentSongList: [],
   isPlaying: false,
   progress: 0
 };
 
-export default function (state = initialPlayerState, action) {
+export default function playerReducer(
+  state: PlayerState = initialPlayerState,
+  action: AppAction
+): PlayerState {
 
   switch (action.type) {
 

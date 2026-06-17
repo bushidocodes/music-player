@@ -1,6 +1,15 @@
 import React from 'react';
 
-export default function Songs(props) {
+import type { Song, ToggleOne } from '../types';
+
+interface SongsProps {
+  songs?: Song[];
+  currentSong: Partial<Song>;
+  isPlaying: boolean;
+  toggleOne: ToggleOne;
+}
+
+export default function Songs(props: SongsProps) {
 
   const songs = props.songs;
   const currentSong = props.currentSong;

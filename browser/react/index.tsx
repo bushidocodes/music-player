@@ -25,15 +25,24 @@ import { apiFetch } from './utils';
 import { receiveAlbums, getAlbumById } from './action-creators/albums';
 import { receiveArtists, getArtistById } from './action-creators/artists';
 import { receivePlaylists, getPlaylistById, loadAllSongs } from './action-creators/playlists';
+import type { Album, Artist, Playlist, Song, ToggleOne } from './types';
+
+interface ArtistOutletContext {
+  albums: Album[];
+  songs: Song[];
+  currentSong: Partial<Song>;
+  isPlaying: boolean;
+  toggleOne: ToggleOne;
+}
 
 function AppWrapper() {
   useEffect(() => {
     async function loadInitialData() {
       try {
         const [albums, artists, playlists] = await Promise.all([
-          apiFetch('/api/albums'),
-          apiFetch('/api/artists'),
-          apiFetch('/api/playlists'),
+          apiFetch<Album[]>('/api/albums'),
+          apiFetch<Artist[]>('/api/artists'),
+          apiFetch<Playlist[]>('/api/playlists'),
         ]);
         store.dispatch(receiveAlbums(albums));
         store.dispatch(receiveArtists(artists));
@@ -49,23 +58,23 @@ function AppWrapper() {
 
 function AlbumRoute() {
   const { albumId } = useParams();
-  useEffect(() => { store.dispatch(getAlbumById(albumId)); }, [albumId]);
+  useEffect(() => { store.dispatch(getAlbumById(albumId!)); }, [albumId]);
   return <AlbumContainer />;
 }
 
 function ArtistRoute() {
   const { artistId } = useParams();
-  useEffect(() => { store.dispatch(getArtistById(artistId)); }, [artistId]);
+  useEffect(() => { store.dispatch(getArtistById(artistId!)); }, [artistId]);
   return <ArtistContainer />;
 }
 
 function ArtistAlbums() {
-  const { albums } = useOutletContext();
+  const { albums } = useOutletContext<ArtistOutletContext>();
   return <Albums albums={albums} />;
 }
 
 function ArtistSongs() {
-  const { songs, currentSong, isPlaying, toggleOne } = useOutletContext();
+  const { songs, currentSong, isPlaying, toggleOne } = useOutletContext<ArtistOutletContext>();
   return <Songs songs={songs} currentSong={currentSong} isPlaying={isPlaying} toggleOne={toggleOne} />;
 }
 
@@ -76,12 +85,12 @@ function StationsLayout() {
 
 function StationRoute() {
   const { genre } = useParams();
-  return <StationContainer genre={genre} />;
+  return <StationContainer genre={genre!} />;
 }
 
 function PlaylistRoute() {
   const { playlistId } = useParams();
-  useEffect(() => { store.dispatch(getPlaylistById(playlistId)); }, [playlistId]);
+  useEffect(() => { store.dispatch(getPlaylistById(playlistId!)); }, [playlistId]);
   return <PlaylistContainer />;
 }
 
@@ -90,7 +99,7 @@ function NewPlaylistRoute() {
   return <NewPlaylistContainer navigate={navigate} />;
 }
 
-createRoot(document.getElementById('app')).render(
+createRoot(document.getElementById('app')!).render(
   <Provider store={store}>
     <HashRouter>
       <Routes>

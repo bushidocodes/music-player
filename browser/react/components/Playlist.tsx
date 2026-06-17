@@ -2,7 +2,14 @@ import React from 'react';
 import Songs from './Songs';
 import AddSongContainer from '../containers/AddSongContainer';
 
-export default function Playlist(props) {
+import type { PlayerState, Playlist, ToggleOne } from '../types';
+
+interface PlaylistProps extends PlayerState {
+  selectedPlaylist: Partial<Playlist>;
+  toggleOne: ToggleOne;
+}
+
+export default function Playlist(props: PlaylistProps) {
 
   const playlist = props.selectedPlaylist;
 
@@ -17,4 +24,3 @@ export default function Playlist(props) {
   );
 
 }
-

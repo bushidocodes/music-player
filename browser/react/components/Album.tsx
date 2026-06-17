@@ -1,7 +1,16 @@
 import React from 'react';
 import Songs from '../components/Songs';
 
-export default function Album(props) {
+import type { Album, Song, ToggleOne } from '../types';
+
+interface AlbumProps {
+  selectedAlbum: Partial<Album>;
+  currentSong: Partial<Song>;
+  isPlaying: boolean;
+  toggleOne: ToggleOne;
+}
+
+export default function Album(props: AlbumProps) {
 
   const album = props.selectedAlbum;
   const currentSong = props.currentSong;

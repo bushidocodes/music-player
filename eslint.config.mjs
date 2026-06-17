@@ -1,46 +1,50 @@
-import { defineConfig } from "eslint/config";
 import react from "eslint-plugin-react";
 import globals from "globals";
-import babelParser from "@babel/eslint-parser";
+import tseslint from "typescript-eslint";
 
-export default defineConfig([{
-    files: ["**/*.js", "**/*.jsx"],
+export default tseslint.config(
+  {
+    ignores: ["public/**", "node_modules/**", "coverage/**"],
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
 
     plugins: {
-        react,
+      react,
+      "@typescript-eslint": tseslint.plugin,
     },
 
     languageOptions: {
-        globals: {
-            ...globals.browser,
-            ...globals.node,
-        },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
 
-        parser: babelParser,
-        ecmaVersion: 2021,
-        sourceType: "module",
+      parser: tseslint.parser,
+      ecmaVersion: 2022,
+      sourceType: "module",
+    },
 
-        parserOptions: {
-            requireConfigFile: false,
-
-            babelOptions: {
-                presets: ["@babel/preset-env", "@babel/preset-react"],
-            },
-        },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
 
     rules: {
-        semi: ["error", "always"],
-        "no-var": "error",
-        "prefer-const": "error",
+      semi: ["error", "always"],
+      "no-var": "error",
+      "prefer-const": "error",
 
-        "no-unused-vars": ["error", {
-            args: "none",
-            ignoreRestSiblings: true,
-        }],
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["error", {
+        args: "none",
+        ignoreRestSiblings: true,
+      }],
 
-        "object-shorthand": ["error", "always"],
-        "react/jsx-uses-react": "error",
-        "react/jsx-uses-vars": "error",
+      "object-shorthand": ["error", "always"],
+      "react/jsx-uses-react": "error",
+      "react/jsx-uses-vars": "error",
     },
-}]);
+  }
+);

@@ -1,7 +1,12 @@
 import { RECEIVE_SONGS } from '../constants';
-const initialSongsState = [];
+import type { SongsState, AppAction } from '../types';
 
-export default function (state = initialSongsState, action) {
+const initialSongsState: SongsState = [];
+
+export default function songsReducer(
+  state: SongsState = initialSongsState,
+  action: AppAction
+): SongsState {
   switch (action.type) {
     case RECEIVE_SONGS:
       return action.songs;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import Sequelize from 'sequelize';
+import { DataTypes } from 'sequelize';
 import unique from './unique-through.js';
 
 describe('unique (deep: String) through (near: String)', () => {
@@ -7,7 +7,7 @@ describe('unique (deep: String) through (near: String)', () => {
 
   it('provides a Sequelize virtual column definition', () => {
     expect(typeof def).toBe('object');
-    expect(def.type).toBe(Sequelize.VIRTUAL);
+    expect(def.type).toBe(DataTypes.VIRTUAL);
     expect(typeof def.get).toBe('function');
   });
 

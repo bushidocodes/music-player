@@ -3,14 +3,18 @@ import {
   RECEIVE_ARTIST
 } from '../constants';
 
-import {convertAlbums, convertSong} from '../utils';
+import { convertAlbums, convertSong } from '../utils';
+import type { ArtistsState, AppAction } from '../types';
 
-const initialArtistState = {
+const initialArtistState: ArtistsState = {
   selected: {},
   list: []
 };
 
-export default function (state = initialArtistState, action) {
+export default function artistsReducer(
+  state: ArtistsState = initialArtistState,
+  action: AppAction
+): ArtistsState {
 
   switch (action.type) {
 

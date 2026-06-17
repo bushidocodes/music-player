@@ -1,14 +1,15 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../hooks';
 import Artist from '../components/Artist';
 import { toggleSong } from '../action-creators/player';
+import type { Song } from '../types';
 
 export default function ArtistContainer() {
-  const selectedArtist = useSelector(state => state.artists.selected);
-  const player = useSelector(state => state.player);
-  const dispatch = useDispatch();
+  const selectedArtist = useAppSelector(state => state.artists.selected);
+  const player = useAppSelector(state => state.player);
+  const dispatch = useAppDispatch();
 
-  const toggleOne = (song, list) => dispatch(toggleSong(song, list));
+  const toggleOne = (song: Song, list: Song[]) => dispatch(toggleSong(song, list));
 
   return (
     <Artist

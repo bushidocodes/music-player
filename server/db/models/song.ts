@@ -1,20 +1,19 @@
+import { DataTypes, Model } from 'sequelize';
 import db from '../db.js';
-
-const DataTypes = db.Sequelize;
 
 const Song = db.define('song', {
   name: {
-    type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
+    type: DataTypes.STRING(1e4),
     allowNull: false,
-    set(val) {
-      this.setDataValue('name', val.trim());
+    set(val: unknown) {
+      this.setDataValue('name', String(val).trim());
     }
   },
   genre: {
     type: DataTypes.STRING,
   },
   url: {
-    type: DataTypes.STRING(1e4), // eslint-disable-line new-cap
+    type: DataTypes.STRING(1e4),
     allowNull: false
   },
 }, {
@@ -32,8 +31,8 @@ const Song = db.define('song', {
   },
 });
 
-Song.prototype.toJSON = function toJSON() {
-  const plain = this.get({ plain: true });
+Song.prototype.toJSON = function toJSON(this: Model) {
+  const plain = this.get({ plain: true }) as Record<string, unknown>;
   delete plain.url;
   return plain;
 };

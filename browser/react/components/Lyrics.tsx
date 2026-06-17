@@ -1,14 +1,26 @@
 import React from 'react';
 
-export default function Lyrics(props) {
+import type { ChangeEvent, FormEvent } from 'react';
+import type { LyricsState } from '../types';
+
+interface LyricsProps {
+  lyrics: LyricsState;
+  artistQuery: string;
+  songQuery: string;
+  handleSubmit: (e: FormEvent) => void;
+  setArtist: (value: string) => void;
+  setSong: (value: string) => void;
+}
+
+export default function Lyrics(props: LyricsProps) {
 
   const text = props.lyrics.text;
   const artistQuery = props.artistQuery;
   const songQuery = props.songQuery;
   const handleSubmit = props.handleSubmit;
 
-  const artistChange = e => props.setArtist(e.target.value);
-  const songChange = e => props.setSong(e.target.value);
+  const artistChange = (e: ChangeEvent<HTMLInputElement>) => props.setArtist(e.target.value);
+  const songChange = (e: ChangeEvent<HTMLInputElement>) => props.setSong(e.target.value);
 
   return (
     <div style={{marginTop: '20px'}}>

@@ -1,7 +1,16 @@
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
-export default function Artist(props) {
+import type { Artist, Song, ToggleOne } from '../types';
+
+interface ArtistProps {
+  selectedArtist: Partial<Artist>;
+  currentSong: Partial<Song>;
+  isPlaying: boolean;
+  toggleOne: ToggleOne;
+}
+
+export default function Artist(props: ArtistProps) {
 
   const artist = props.selectedArtist;
   const albums = artist.albums || [];

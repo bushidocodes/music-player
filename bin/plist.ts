@@ -1,4 +1,16 @@
-function decodeEntities(s) {
+type PlistValue =
+  | string
+  | number
+  | boolean
+  | null
+  | PlistValue[]
+  | { [k: string]: PlistValue };
+
+type Token =
+  | { type: 'tag'; raw: string }
+  | { type: 'text'; value: string };
+
+function decodeEntities(s: string): string {
   return s
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
@@ -10,7 +22,7 @@ function decodeEntities(s) {
 }
 
 // classify(rawTag) -> { kind: 'open'|'close'|'selfclose', name: String }
-function classify(raw) {
+function classify(raw: string): { kind: 'open' | 'close' | 'selfclose'; name: string } {
   const t = raw.trim();
   if (t.startsWith('/')) return { kind: 'close', name: t.slice(1).trim() };
   const selfClose = t.endsWith('/');
@@ -18,15 +30,15 @@ function classify(raw) {
   return { kind: selfClose ? 'selfclose' : 'open', name: body.split(/\s+/)[0] };
 }
 
-export function parsePlist(xml) {
+export function parsePlist(xml: string): PlistValue {
   const body = xml
     .replace(/<\?xml[^>]*\?>/g, '')
     .replace(/<!DOCTYPE[^>]*>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '');
 
-  const tokens = [];
+  const tokens: Token[] = [];
   const re = /<([^>]+)>|([^<]+)/g;
-  let m;
+  let m: RegExpExecArray | null;
   while ((m = re.exec(body)) !== null) {
     if (m[1] !== undefined) tokens.push({ type: 'tag', raw: m[1] });
     else if (m[2].trim() !== '') tokens.push({ type: 'text', value: decodeEntities(m[2]) });
@@ -34,14 +46,16 @@ export function parsePlist(xml) {
 
   let pos = 0;
 
-  function readText() {
+  function readText(): string {
     let text = '';
-    if (tokens[pos] && tokens[pos].type === 'text') text = tokens[pos++].value;
-    if (tokens[pos] && tokens[pos].type === 'tag' && classify(tokens[pos].raw).kind === 'close') pos++;
+    const cur = tokens[pos];
+    if (cur && cur.type === 'text') text = (tokens[pos++] as { type: 'text'; value: string }).value;
+    const next = tokens[pos];
+    if (next && next.type === 'tag' && classify(next.raw).kind === 'close') pos++;
     return text;
   }
 
-  function skipTo(name) {
+  function skipTo(name: string): void {
     let depth = 1;
     while (pos < tokens.length && depth > 0) {
       const tok = tokens[pos++];
@@ -52,14 +66,15 @@ export function parsePlist(xml) {
     }
   }
 
-  function parseValue() {
-    const tok = tokens[pos++];
+  function parseValue(): PlistValue {
+    const tok = tokens[pos++] as { type: 'tag'; raw: string };
     const c = classify(tok.raw);
 
     switch (c.name) {
       case 'plist': {
         const value = parseValue();
-        if (tokens[pos] && tokens[pos].type === 'tag' && classify(tokens[pos].raw).kind === 'close') pos++;
+        const next = tokens[pos];
+        if (next && next.type === 'tag' && classify(next.raw).kind === 'close') pos++;
         return value;
       }
       case 'true':
@@ -67,10 +82,10 @@ export function parsePlist(xml) {
       case 'false':
         return false;
       case 'dict': {
-        const obj = {};
+        const obj: { [k: string]: PlistValue } = {};
         if (c.kind === 'selfclose') return obj;
         while (pos < tokens.length) {
-          const next = classify(tokens[pos].raw);
+          const next = classify((tokens[pos] as { type: 'tag'; raw: string }).raw);
           if (next.kind === 'close' && next.name === 'dict') { pos++; break; }
           pos++; // consume <key>
           const key = readText();
@@ -79,10 +94,10 @@ export function parsePlist(xml) {
         return obj;
       }
       case 'array': {
-        const arr = [];
+        const arr: PlistValue[] = [];
         if (c.kind === 'selfclose') return arr;
         while (pos < tokens.length) {
-          const next = classify(tokens[pos].raw);
+          const next = classify((tokens[pos] as { type: 'tag'; raw: string }).raw);
           if (next.kind === 'close' && next.name === 'array') { pos++; break; }
           arr.push(parseValue());
         }

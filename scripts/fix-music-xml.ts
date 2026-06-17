@@ -14,7 +14,7 @@ let xml = fs.readFileSync(xmlPath, 'utf8');
 
 // ── Dexter Britain — Creative Commons Volume 2 ──────────────────────────────
 const ccVol2Base = 'https://archive.org/download/Creative_Commons_Volume_2-11989';
-const ccVol2 = [
+const ccVol2: [string, string][] = [
   ['01%20The%20Tea%20Party.mp3',                   'Dexter_Britain_-_01_-_The_Tea_Party.mp3'],
   ['02%20After%20Christmas.mp3',                   'Dexter_Britain_-_02_-_After_Christmas.mp3'],
   ['03%20My%20Song%20For%20January.mp3',           'Dexter_Britain_-_03_-_My_Song_For_January.mp3'],
@@ -35,7 +35,7 @@ for (const [oldFile, newFile] of ccVol2) {
 
 // ── Dexter Britain — Zenith ──────────────────────────────────────────────────
 const zenithBase = 'https://archive.org/download/Zenith-14876';
-const zenith = [
+const zenith: [string, string][] = [
   ['01%20Shooting%20Star.mp3',                     'Dexter_Britain_-_01_-_Shooting_Star.mp3'],
   ['02%20The%20Stars%20Are%20Out.mp3',             'Dexter_Britain_-_02_-_The_Stars_Are_Out.mp3'],
   ['03%20The%20Stars%20Are%20Out%20(Interlude).mp3', 'Dexter_Britain_-_03_-_The_Stars_Are_Out_Interlude.mp3'],
@@ -47,7 +47,7 @@ for (const [oldFile, newFile] of zenith) {
 
 // ── Nine Inch Nails — Ghosts I-IV (Ghosts I section, tracks 1–9) ────────────
 const ghostsBase = 'https://archive.org/download/nineinchnails_ghosts_I_IV';
-const ghosts = [
+const ghosts: [string, string][] = [
   ['01%201%20Ghosts%20I.mp3', '01_Ghosts_I_320kb.mp3'],
   ['02%202%20Ghosts%20I.mp3', '02_Ghosts_I_320kb.mp3'],
   ['03%203%20Ghosts%20I.mp3', '03_Ghosts_I_320kb.mp3'],
@@ -65,7 +65,7 @@ for (const [oldFile, newFile] of ghosts) {
 
 // ── Nine Inch Nails — The Slip ────────────────────────────────────────────────
 const slipBase = 'https://archive.org/download/nine_inch_nails_the_slip';
-const slip = [
+const slip: [string, string][] = [
   ['01%20999,999.mp3',                              '01_999999.mp3'],
   ['02%201,000,000.mp3',                            '02_1000000.mp3'],
   ['03%20Letting%20You.mp3',                        '03_letting_you.mp3'],
@@ -83,7 +83,7 @@ for (const [oldFile, newFile] of slip) {
 }
 
 // ── Remove Jets Overhead tracks (not archived anywhere) ──────────────────────
-const jetsIds = ['7836','7839','7842','7845','7848','7851','7854','7857','7860','7863'];
+const jetsIds: string[] = ['7836','7839','7842','7845','7848','7851','7854','7857','7860','7863'];
 for (const id of jetsIds) {
   const re = new RegExp(`\\t\\t<key>${id}<\\/key>\\r?\\n\\t\\t<dict>[\\s\\S]*?\\t\\t<\\/dict>\\r?\\n`);
   xml = xml.replace(re, '');

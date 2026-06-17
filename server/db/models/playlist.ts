@@ -1,14 +1,13 @@
+import { DataTypes } from 'sequelize';
 import db from '../db.js';
 import unique from './plugins/unique-through.js';
-
-const DataTypes = db.Sequelize;
 
 const Playlist = db.define('playlist', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
-    set(val) {
-      this.setDataValue('name', val.trim());
+    set(val: unknown) {
+      this.setDataValue('name', String(val).trim());
     }
   },
   artists: unique('artists').through('songs')
@@ -16,17 +15,17 @@ const Playlist = db.define('playlist', {
   scopes: {
     populated: () => ({
       include: [{
-        model: db.model('song').scope('defaultScope', 'populated')
+        model: db.model('song').scope(['defaultScope', 'populated'])
       }]
     })
   }
 });
 
-Playlist.prototype.addAndReturnSong = async function (songId) {
+(Playlist.prototype as any).addAndReturnSong = async function (this: any, songId: number | string) {
   songId = String(songId);
   const [, song] = await Promise.all([
     this.addSong(songId),
-    db.model('song').scope('defaultScope', 'populated').findByPk(songId),
+    db.model('song').scope(['defaultScope', 'populated']).findByPk(songId),
   ]);
   return song;
 };

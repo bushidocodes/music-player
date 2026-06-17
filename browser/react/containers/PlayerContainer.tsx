@@ -1,18 +1,19 @@
 import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../hooks';
 import AUDIO from '../audio';
 import { previous, next, setProgress, toggleSong } from '../action-creators/player';
 import Player from '../components/Player';
+import type { Song } from '../types';
 
 export default function PlayerContainer() {
-  const player = useSelector(state => state.player);
-  const dispatch = useDispatch();
+  const player = useAppSelector(state => state.player);
+  const dispatch = useAppDispatch();
 
   // Stable callbacks — dispatch is always the same reference
   const handleNext = useCallback(() => dispatch(next()), [dispatch]);
   const handlePrev = useCallback(() => dispatch(previous()), [dispatch]);
   const handleToggle = useCallback(
-    () => dispatch(toggleSong(player.currentSong, player.currentSongList)),
+    () => dispatch(toggleSong(player.currentSong as Song, player.currentSongList)),
     [dispatch, player.currentSong, player.currentSongList]
   );
 

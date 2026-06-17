@@ -1,6 +1,13 @@
 import React from 'react';
 
-const FilterInput = (props) => {
+import type { ChangeEvent } from 'react';
+
+interface FilterInputProps {
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputValue: string;
+}
+
+const FilterInput = (props: FilterInputProps) => {
 
   const handleChange = props.handleChange;
   const inputValue = props.inputValue;

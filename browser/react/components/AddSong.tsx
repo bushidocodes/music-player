@@ -1,6 +1,16 @@
 import React from 'react';
 
-export default function AddSong(props) {
+import type { ChangeEvent, FormEvent } from 'react';
+import type { Song } from '../types';
+
+interface AddSongProps {
+  songs?: Song[];
+  error: boolean;
+  handleChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  handleSubmit: (e: FormEvent) => void;
+}
+
+export default function AddSong(props: AddSongProps) {
 
   const songs = props.songs;
   const error = props.error;

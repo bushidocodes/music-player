@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import type { ChangeEvent, FormEvent } from 'react';
+import type { NavigateFunction } from 'react-router-dom';
+import { useAppDispatch } from '../hooks';
 import NewPlaylist from '../components/NewPlaylist';
 import { addNewPlaylist } from '../action-creators/playlists';
 
-export default function NewPlaylistContainer({ navigate }) {
-  const dispatch = useDispatch();
+interface NewPlaylistContainerProps {
+  navigate: NavigateFunction;
+}
+
+export default function NewPlaylistContainer({ navigate }: NewPlaylistContainerProps) {
+  const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState('');
   const [dirty, setDirty] = useState(false);
 
-  const handleChange = (evt) => {
+  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setInputValue(evt.target.value);
     setDirty(true);
   };
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = (evt: FormEvent) => {
     evt.preventDefault();
     dispatch(addNewPlaylist(inputValue, navigate));
     setInputValue('');

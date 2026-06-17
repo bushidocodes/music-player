@@ -2,9 +2,15 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "juke-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite"],
+      "port": 3000
+    },
+    {
       "name": "juke",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server/start.js"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "server/start.ts"],
       "port": 1337
     }
   ]
