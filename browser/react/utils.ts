@@ -36,7 +36,7 @@ export const skip = (
   interval: number,
   { currentSongList, currentSong }: { currentSongList: Song[]; currentSong: Partial<Song> }
 ): [Song, Song[]] => {
-  let idx = currentSongList.map(song => song.id).indexOf(currentSong.id as number);
+  let idx = currentSongList.map(song => song.id).indexOf(currentSong.id ?? -1);
   idx = mod(idx + interval, currentSongList.length);
   const next = currentSongList[idx];
   return [next, currentSongList];
@@ -45,7 +45,7 @@ export const skip = (
 export const generateStationsFromSongs = (songs: Song[]): Stations => {
   const resultObj: Stations = {};
   songs.forEach((song) => {
-    const genre = song.genre as string;
+    const genre = String(song.genre);
     resultObj[genre] = resultObj[genre] || [];
     resultObj[genre].push(song);
   });

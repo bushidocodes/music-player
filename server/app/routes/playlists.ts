@@ -1,4 +1,5 @@
 import express from 'express';
+import { HttpError } from '../http-error.js';
 import type { PlaylistRepository } from '../../db/models/types.js';
 
 export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
@@ -16,9 +17,7 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   router.post('/', async (req, res, next) => {
     const name = req.body && req.body.name && String(req.body.name).trim();
     if (!name) {
-      const err = new Error('name is required and must be a non-empty string') as Error & { status?: number };
-      err.status = 400;
-      return next(err);
+      return next(new HttpError('name is required and must be a non-empty string', 400));
     }
     try {
       const playlist = await Playlist.create({ name });
@@ -32,9 +31,7 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
     try {
       const playlist = await Playlist.scope('populated').findByPk(id);
       if (!playlist) {
-        const err = new Error('Playlist not found') as Error & { status?: number };
-        err.status = 404;
-        return next(err);
+        return next(new HttpError('Playlist not found', 404));
       }
       req.playlist = playlist;
       next();
@@ -48,9 +45,7 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   router.put('/:playlistId', async (req, res, next) => {
     const name = req.body && req.body.name && String(req.body.name).trim();
     if (!name) {
-      const err = new Error('name is required and must be a non-empty string') as Error & { status?: number };
-      err.status = 400;
-      return next(err);
+      return next(new HttpError('name is required and must be a non-empty string', 400));
     }
     try {
       const playlist = await req.playlist.update({ name });
@@ -73,16 +68,14 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
 
   router.post('/:playlistId/songs', async (req, res, next) => {
     if (!req.body.id && !req.body.song) {
-      const err = new Error('Request body must include either id or song') as Error & { status?: number };
-      err.status = 400;
-      return next(err);
+      return next(new HttpError('Request body must include either id or song', 400));
     }
     const id = req.body.id || req.body.song.id;
     try {
       const song = await req.playlist.addAndReturnSong(id);
       res.status(201).json(song);
     } catch (err) {
-      if ((err as { name?: string }).name === 'SequelizeUniqueConstraintError') {
+      if (err instanceof Error && err.name === 'SequelizeUniqueConstraintError') {
         res.status(409).send('Song is already in the playlist.');
       } else {
         next(err);

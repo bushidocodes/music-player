@@ -3,6 +3,7 @@ import express from 'express';
 import type { ErrorRequestHandler } from 'express';
 import configure from './configure/index.js';
 import apiRouter from './routes/index.js';
+import { HttpError } from './http-error.js';
 import type { ConfiguredApp } from './types.js';
 
 const app = express() as unknown as ConfiguredApp;
@@ -24,8 +25,10 @@ app.get('/*', function (req, res) {
   res.sendFile(app.get('indexHTMLPath'));
 });
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).send(err.message || 'Internal server error.');
+const errorHandler: ErrorRequestHandler = (err: unknown, req, res, next) => {
+  console.error(err instanceof Error ? err.stack : err);
+  const status = err instanceof HttpError ? err.status : 500;
+  const message = (err instanceof Error && err.message) || 'Internal server error.';
+  res.status(status).send(message);
 };
 app.use(errorHandler);

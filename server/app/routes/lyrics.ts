@@ -9,7 +9,7 @@ export default function createLyricsRouter(axios: AxiosInstance) {
   router.get('/:artist/:song', async (req, res, next) => {
     try {
       const url = `${lyricsAPIPrefix}/${encodeURIComponent(req.params.artist)}/${encodeURIComponent(req.params.song)}`;
-      const response = await axios.get(url);
+      const response = await axios.get<{ lyrics?: string | null }>(url);
       const lyric = response.data?.lyrics ?? null;
       res.send({ lyric });
     } catch (err) {

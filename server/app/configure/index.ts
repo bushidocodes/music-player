@@ -1,6 +1,7 @@
 import configureAppVariables from './app-variables.js';
 import configureStaticMiddleware from './static-middleware.js';
 import configureParsingMiddleware from './parsing-middleware.js';
+import type { RequestHandler } from 'express';
 import type { ConfiguredApp } from '../types.js';
 
 export default (app: ConfiguredApp) => {
@@ -9,7 +10,7 @@ export default (app: ConfiguredApp) => {
 
   configureAppVariables(app);
 
-  app.use(app.getValue('log'));
+  app.use(app.getValue<RequestHandler>('log'));
 
   configureStaticMiddleware(app);
   configureParsingMiddleware(app);

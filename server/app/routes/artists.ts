@@ -1,4 +1,5 @@
 import express from 'express';
+import { HttpError } from '../http-error.js';
 import type { ArtistRepository } from '../../db/models/types.js';
 
 export default function createArtistsRouter(Artist: ArtistRepository) {
@@ -17,9 +18,7 @@ export default function createArtistsRouter(Artist: ArtistRepository) {
     try {
       const artist = await Artist.findByPk(id);
       if (!artist) {
-        const err = new Error('Artist not found') as Error & { status?: number };
-        err.status = 404;
-        return next(err);
+        return next(new HttpError('Artist not found', 404));
       }
       req.artist = artist;
       next();
