@@ -1,6 +1,15 @@
 import React from 'react';
 
-export default function NewPlaylist(props) {
+import type { ChangeEvent, FormEvent } from 'react';
+
+interface NewPlaylistProps {
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: FormEvent) => void;
+  warning: string;
+  inputValue: string;
+}
+
+export default function NewPlaylist(props: NewPlaylistProps) {
 
   const handleChange = props.handleChange;
   const handleSubmit = props.handleSubmit;

@@ -1,7 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Stations(props) {
+import type { Stations } from '../types';
+
+interface StationsProps {
+  stations: Stations;
+}
+
+export default function Stations(props: StationsProps) {
   return (
     <div>
       <h3>Stations</h3>

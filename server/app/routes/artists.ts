@@ -1,7 +1,8 @@
 import express from 'express';
+import type { ArtistRepository } from '../../db/models/types.js';
 
-export default function createArtistsRouter(Artist) {
-  const router = new express.Router();
+export default function createArtistsRouter(Artist: ArtistRepository) {
+  const router = express.Router();
 
   router.get('/', async (req, res, next) => {
     try {
@@ -16,7 +17,7 @@ export default function createArtistsRouter(Artist) {
     try {
       const artist = await Artist.findByPk(id);
       if (!artist) {
-        const err = new Error('Artist not found');
+        const err = new Error('Artist not found') as Error & { status?: number };
         err.status = 404;
         return next(err);
       }

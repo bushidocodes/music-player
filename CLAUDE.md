@@ -7,30 +7,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm install          # Install dependencies
 npm run seed         # Seed database with music.xml / iTunes library data
-npm start            # Start dev server (Webpack watch + Nodemon on port 1337)
-npm test             # Run server-side tests
+npm start            # Dev server: Vite (:3000) + tsx-watched API (:1337)
+npm test             # Run server-side tests (Vitest)
+npm run typecheck    # Type-check both the browser and server TS projects
+npm run lint         # ESLint (typescript-eslint)
+npm run build        # Production build (Vite → public/)
 ```
 
 PostgreSQL must be running with trust auth for local connections and a role matching your OS username. See README.md for setup steps.
 
 ## Architecture
 
-**Juke** is a full-stack music streaming app: React + Redux frontend, Express/PostgreSQL backend, bundled with Webpack 5.
+**Juke** is a full-stack **TypeScript** music streaming app: React + Redux frontend, Express/PostgreSQL backend, built with Vite.
 
 ### Frontend (`browser/react/`)
 
-- **Entry**: `browser/react/index.js` — mounts React Router v6 (hash history) with Redux Provider
-- **Store**: `browser/react/store.js` — Redux Toolkit `configureStore` with logger middleware
-- **Pattern**: containers (smart, Redux-connected) in `containers/`, presentational components in `components/`
-- **Action flow**: `action-creators/` dispatch async thunks via Axios → `reducers/` update state slices: `albums`, `artists`, `playlists`, `player`, `lyrics`, `songs`
+- **Entry**: `browser/react/index.tsx` — mounts React Router v6 (hash history) with Redux Provider
+- **Store**: `browser/react/store.ts` — Redux Toolkit `configureStore`; exports `RootState` / `AppDispatch` / `AppThunk`. Pre-typed hooks live in `hooks.ts`; shared domain entities, state slices, and the action union are in `types.ts`.
+- **Pattern**: containers (smart, Redux-connected via `useAppSelector` / `useAppDispatch`) in `containers/`, presentational components in `components/`
+- **Action flow**: `action-creators/` dispatch async thunks (client uses `fetch` via `apiFetch`) → `reducers/` update state slices: `albums`, `artists`, `playlists`, `player`, `lyrics`, `songs`
 
 ### Backend (`server/`)
 
-- **Entry**: `server/start.js` (Babel register) → `server/main.js` (HTTP server + Express mount)
-- **Routes**: `server/app/routes/` — RESTful API at `/api/{albums,artists,songs,playlists,lyrics}`
+- **Entry**: `server/start.ts` → `server/main.ts` (HTTP server + Express mount). Run directly from `.ts` via `tsx` — no build step.
+- **Routes**: `server/app/routes/` — RESTful API at `/api/{albums,artists,songs,playlists,lyrics}`. Route factories receive a Sequelize model typed via the structural `*Repository` interfaces in `db/models/types.ts`.
 - **Database**: Sequelize + PostgreSQL; models in `server/db/models/`
   - Song ↔ Album (many-to-one), Song ↔ Artist (many-to-many), Song ↔ Playlist (many-to-many)
+- The rows attached to `req` by the param handlers (`req.album` / `req.song` / `req.artist` / `req.playlist`) are declared in `server/types/express.d.ts`.
 
-### Build
+### TypeScript / Build
 
-Webpack 5 bundles `browser/react/index.js` → `public/bundle.js`. Uses Babel with `@babel/preset-env` + `@babel/preset-react` for both client and server code.
+- Vite bundles `browser/react/index.tsx` → `public/` (hashed assets, served statically by Express). The server runs directly from `.ts` via `tsx`, so there is no separate server build step.
+- Two strict `tsconfig`s share `tsconfig.base.json`: the root `tsconfig.json` covers the Node side (`server/`, `bin/`, `scripts/`, NodeNext resolution — keep `.js` import specifiers), and `browser/tsconfig.json` covers the DOM/bundler side (`browser/react/`). `npm run typecheck` runs both. Test files (`*.test.ts`) are excluded from the strict typecheck and run under Vitest.

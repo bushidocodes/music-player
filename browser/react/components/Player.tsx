@@ -1,6 +1,17 @@
 import React from 'react';
 
-export default function Player(props) {
+import type { Song } from '../types';
+
+interface PlayerProps {
+  currentSong: Partial<Song>;
+  isPlaying: boolean;
+  progress: number;
+  prev: () => void;
+  toggle: () => void;
+  next: () => void;
+}
+
+export default function Player(props: PlayerProps) {
 
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
@@ -11,7 +22,7 @@ export default function Player(props) {
 
   return (
     <footer>
-      <div style={!currentSong.id ? {display: 'none'} : null}>
+      <div style={!currentSong.id ? {display: 'none'} : undefined}>
         <div className="float-start">
           <button className="btn btn-secondary" onClick={prev}>
             <span className="bi bi-skip-backward-fill"></span>

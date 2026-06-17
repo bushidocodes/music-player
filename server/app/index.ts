@@ -1,9 +1,11 @@
 import path from 'path';
 import express from 'express';
+import type { ErrorRequestHandler } from 'express';
 import configure from './configure/index.js';
 import apiRouter from './routes/index.js';
+import type { ConfiguredApp } from './types.js';
 
-const app = express();
+const app = express() as unknown as ConfiguredApp;
 export default app;
 
 configure(app);
@@ -22,7 +24,8 @@ app.get('/*', function (req, res) {
   res.sendFile(app.get('indexHTMLPath'));
 });
 
-app.use(function (err, req, res, next) { // eslint-disable-line no-unused-vars
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).send(err.message || 'Internal server error.');
-});
+};
+app.use(errorHandler);

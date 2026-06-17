@@ -1,26 +1,27 @@
 import express from 'express';
 import http from 'http';
 import https from 'https';
-import { PassThrough } from 'stream';
+import { PassThrough, Readable } from 'stream';
 import { parseStream } from 'music-metadata';
 import fs from 'fs';
+import type { SongRepository } from '../../db/models/types.js';
 
 const MAX_REDIRECTS = 10;
-function open(url) {
+function open(url: string): Readable {
   const parsed = new URL(url);
   if (parsed.protocol === 'file:') {
     return fs.createReadStream(decodeURIComponent(parsed.pathname));
   }
   const pass = new PassThrough();
-  function fetch(currentUrl, redirectCount) {
+  function fetch(currentUrl: string, redirectCount: number) {
     if (redirectCount > MAX_REDIRECTS) {
       pass.destroy(new Error(`Too many redirects (max ${MAX_REDIRECTS})`));
       return;
     }
-    const get = currentUrl.startsWith('https:') ? https.get : http.get;
+    const get: typeof http.get = currentUrl.startsWith('https:') ? https.get : http.get;
     get(currentUrl, response => {
       const { statusCode, headers } = response;
-      if (statusCode >= 300 && statusCode < 400 && headers.location) {
+      if (statusCode && statusCode >= 300 && statusCode < 400 && headers.location) {
         response.resume();
         fetch(headers.location, redirectCount + 1);
       } else {
@@ -32,7 +33,7 @@ function open(url) {
   return pass;
 }
 
-export default function createSongsRouter(Song) {
+export default function createSongsRouter(Song: SongRepository) {
   const router = express.Router();
 
   router.get('/', async (req, res, next) => {
@@ -48,7 +49,7 @@ export default function createSongsRouter(Song) {
     try {
       const song = await Song.scope('defaultScope', 'populated').findByPk(id);
       if (!song) {
-        const err = new Error('Song not found');
+        const err = new Error('Song not found') as Error & { status?: number };
         err.status = 404;
         return next(err);
       }

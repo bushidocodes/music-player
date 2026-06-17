@@ -1,7 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Albums(props) {
+import type { Album } from '../types';
+
+interface AlbumsProps {
+  albums?: Album[];
+}
+
+export default function Albums(props: AlbumsProps) {
 
   const albums = props.albums;
 

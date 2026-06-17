@@ -3,14 +3,18 @@ import {
   RECEIVE_PLAYLIST,
 } from '../constants';
 
-import {convertSong} from '../utils';
+import { convertSong } from '../utils';
+import type { PlaylistsState, AppAction } from '../types';
 
-const initialPlaylistsState = {
+const initialPlaylistsState: PlaylistsState = {
   selected: {},
   list: []
 };
 
-export default function (state = initialPlaylistsState, action) {
+export default function playlistsReducer(
+  state: PlaylistsState = initialPlaylistsState,
+  action: AppAction
+): PlaylistsState {
 
   switch (action.type) {
 

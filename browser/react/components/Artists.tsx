@@ -1,7 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Artists(props) {
+import type { Artist } from '../types';
+
+interface ArtistsProps {
+  artists: Artist[];
+}
+
+export default function Artists(props: ArtistsProps) {
 
   const artists = props.artists;
 

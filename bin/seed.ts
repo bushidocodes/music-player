@@ -10,7 +10,8 @@ import log from './log.js';
 import { program } from 'commander';
 
 // Polyfill for Bluebird's Promise.props(): resolves an object's promise values.
-function promiseProps(obj) {
+// pragmatic any: resolves a heterogeneous map of (possibly-promise) DB values
+function promiseProps(obj: Record<string, any>): Promise<Record<string, any>> {
   const keys = Object.keys(obj);
   return Promise.all(keys.map(k => obj[k]))
     .then(vals => Object.fromEntries(keys.map((k, i) => [k, vals[i]])));
@@ -20,7 +21,7 @@ const KEY = Symbol('key');
 const DEFAULT_TRACK_LIMIT = 500;
 
 const counts = { total: 0, skipped: 0, seeding: 0, seeded: 0 };
-let progressInterval = null;
+let progressInterval: ReturnType<typeof setInterval> | null = null;
 
 function startProgress() {
   progressInterval = setInterval(() => {
@@ -31,7 +32,7 @@ function startProgress() {
 }
 
 function stopProgress() {
-  clearInterval(progressInterval);
+  clearInterval(progressInterval as ReturnType<typeof setInterval>);
   process.stdout.write('\n');
 }
 
@@ -42,7 +43,7 @@ program
   .option('-L, --limit <num>', `Limit total tracks imported to <num> (default ${DEFAULT_TRACK_LIMIT})`, parseInt)
   .option('-u, --unlimited', 'Import unlimited tracks');
 
-let trackLimit;
+let trackLimit: number;
 
 function main() {
   program.parse(process.argv);
@@ -59,7 +60,7 @@ function main() {
     });
 }
 
-process.on('exit', bye =>
+process.on('exit', () =>
            console.log(
              [Artist, Album, Song, ArtistSong].map(
                model =>
@@ -69,11 +70,12 @@ process.on('exit', bye =>
                .join('\n')
            ));
 
-function importLibrary(xmlPath) {
+function importLibrary(xmlPath: string) {
   if (!xmlPath) return;
 
-  const tracksById = parsePlist(fs.readFileSync(xmlPath, 'utf8')).Tracks || {};
-  const tracks = [];
+  // pragmatic any: parsePlist returns heterogeneous plist values; Tracks is a dynamic map
+  const tracksById: Record<string, any> = (parsePlist(fs.readFileSync(xmlPath, 'utf8')) as any).Tracks || {};
+  const tracks: Promise<any>[] = [];
 
   for (const id of Object.keys(tracksById)) {
     const data = tracksById[id];
@@ -116,37 +118,53 @@ function importLibrary(xmlPath) {
   return Promise.all(tracks);
 }
 
-const Results = ['artists', 'albums', 'songs', 'artistSong']
+// pragmatic any: findOrCreate is a callable that also carries mutable stat counters,
+// a primaryKey/table descriptor, a KEY symbol, and an in-flight promise cache keyed
+// by computed string keys — typing this precisely would require restructuring the logic.
+type FindOrCreate = {
+  (columnValues: Record<string, any>): Promise<any> & { [KEY]?: string };
+  found: number;
+  created: number;
+  errors: number;
+  table: string;
+  primaryKey?: string[];
+  [key: string]: any;
+};
+
+const Results: FindOrCreate[] = ['artists', 'albums', 'songs', 'artistSong']
       .map(table => {
-          function findOrCreate(columnValues) {
+          // pragmatic any: `findOrCreate` is both a callable and a stat/cache holder;
+          // the typed `FindOrCreate` alias above lets the body's self-references and
+          // KEY-symbol indexing resolve without restructuring the promise chain.
+          const findOrCreate = function (columnValues: Record<string, any>): any {
              const key = keyFor(columnValues);
              if (findOrCreate[key]) {
                log.debug `cache hit for ${key}, with inner key ${findOrCreate[key][KEY]}`;
                return findOrCreate[key];
              }
-             const pKeyExpr = (findOrCreate.primaryKey || ['id']).map(k => `"${k}"`).join(',');
-             var keys, values;
-             let self = findOrCreate[key] = promiseProps(columnValues)
+             const pKeyExpr = (findOrCreate.primaryKey || ['id']).map((k: string) => `"${k}"`).join(',');
+             var keys: string[], values: any[];
+             let self: any = findOrCreate[key] = promiseProps(columnValues)
                  .then(cols => {
                    keys = Object.keys(cols);
                    values = keys.map(k => cols[k]);
                    return cols;
                  })
-                 .then(row => db.query(`SELECT ${pKeyExpr} from "${table}"
+                 .then(() => db.query(`SELECT ${pKeyExpr} from "${table}"
                                        WHERE ${keys.map(col => `"${col}"=?`).join(' AND ')}`, {
                                          replacements: values,
-                                         type: 'SELECT'
+                                         type: 'SELECT' as any
                                        }))
-                 .then(results => results.length? (++findOrCreate.found, results) :
+                 .then((results: any) => results.length? (++findOrCreate.found, results) :
                         db.query(`INSERT INTO "${table}"
                                (${keys.map(c => `"${c}"`).join(', ')}, "createdAt", "updatedAt")
-                                 VALUES (${keys.map(v => '?')}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                                 VALUES (${keys.map(() => '?')}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                                  RETURNING ${pKeyExpr}`, {
                                    replacements: values,
-                                   type: 'SELECT'
+                                   type: 'SELECT' as any
                                  }))
-                 .then(results => (++findOrCreate.created, results[0].id))
-                 .catch(err => {
+                 .then((results: any) => (++findOrCreate.created, results[0].id))
+                 .catch((err: any) => {
                    log.error `warning: ${err.message}`;
                    log.error `  in findOrCreate for ${key} into ${table}`;
                    ++findOrCreate.errors;
@@ -158,7 +176,7 @@ const Results = ['artists', 'albums', 'songs', 'artistSong']
 
              findOrCreate[key] = self;
              return self;
-           }
+           } as FindOrCreate;
 
         findOrCreate.found = 0;
         findOrCreate.created = 0;
@@ -173,7 +191,8 @@ const Artist = Results[0],
 
 ArtistSong.primaryKey = ['artistId', 'songId'];
 
-function keyFor(obj) {
+// pragmatic any: keyFor recurses over arbitrary (possibly KEY-tagged) plist objects
+function keyFor(obj: any): string {
   return obj && obj[KEY] ||
     obj && typeof obj === 'object' && `{${Object.keys(obj).map(k => `${k}:${keyFor(obj[k])}`)}}` ||
     obj + '';

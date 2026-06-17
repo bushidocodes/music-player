@@ -2,10 +2,11 @@ import path from 'path';
 import { createRequire } from 'module';
 import express from 'express';
 import favicon from 'serve-favicon';
+import type { ConfiguredApp } from '../types.js';
 
 const require = createRequire(import.meta.url);
 
-export default function (app) {
+export default function (app: ConfiguredApp) {
   const root = app.getValue('projectRoot');
 
   const bootstrapPath = path.dirname(require.resolve('bootstrap/package.json'));

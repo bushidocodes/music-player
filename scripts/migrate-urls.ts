@@ -7,7 +7,7 @@
 
 import db from '../server/db/db.js';
 
-const urlMap = {
+const urlMap: Record<string, string> = {
   // ── Dexter Britain — Creative Commons Volume 2 ──────────────────────────
   'https://storage.googleapis.com/juke-1379.appspot.com/juke-music/Dexter%20Britain/Creative%20Commons%20Volume%202/01%20The%20Tea%20Party.mp3':
     'https://archive.org/download/Creative_Commons_Volume_2-11989/Dexter_Britain_-_01_-_The_Tea_Party.mp3',
@@ -89,17 +89,19 @@ async function run() {
   let updated = 0, deleted = 0, notFound = 0;
 
   for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
-    const [result] = await db.query(
+    // pragmatic any: db.query returns [result, metadata]; result shape is driver-specific
+    const [result] = (await db.query(
       `UPDATE songs SET url = :newUrl, "updatedAt" = NOW() WHERE url = :oldUrl`,
       { replacements: { oldUrl, newUrl } }
-    );
+    )) as unknown as [{ rowCount: number }, unknown];
     if (result.rowCount > 0) updated++;
     else notFound++;
   }
 
-  const [delResult] = await db.query(
+  // pragmatic any: db.query returns [result, metadata]; result shape is driver-specific
+  const [delResult] = (await db.query(
     `DELETE FROM songs WHERE url LIKE '%juke-1379.appspot.com%Jets%Overhead%'`
-  );
+  )) as unknown as [{ rowCount: number }, unknown];
   deleted = delResult.rowCount;
 
   await db.query(`
@@ -113,11 +115,16 @@ async function run() {
     )
   `);
 
-  const [[{ count }]] = await db.query(`SELECT COUNT(*) as count FROM songs`);
+  // pragmatic any: COUNT(*) row shape is driver-specific
+  const [[{ count }]] = (await db.query(`SELECT COUNT(*) as count FROM songs`)) as [
+    Array<{ count: string }>,
+    unknown,
+  ];
   console.log(`✓ Updated ${updated} URLs, deleted ${deleted} Jets Overhead songs`);
   if (notFound) console.log(`  (${notFound} old URLs not found — already updated or missing)`);
   console.log(`  ${count} songs remain in database`);
   db.close();
 }
 
-run().catch(err => { console.error(err.message); db.close(); process.exit(1); });
+// pragmatic any: preserve original `err.message` access without altering runtime behavior
+run().catch((err: any) => { console.error(err.message); db.close(); process.exit(1); });

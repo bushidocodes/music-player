@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import type { FormEvent } from 'react';
+import { useAppSelector, useAppDispatch } from '../hooks';
 import Lyrics from '../components/Lyrics';
 import { searchLyrics } from '../action-creators/lyrics';
 
 export default function LyricsContainer() {
-  const lyrics = useSelector(state => state.lyrics);
-  const dispatch = useDispatch();
+  const lyrics = useAppSelector(state => state.lyrics);
+  const dispatch = useAppDispatch();
   const [artistQuery, setArtistQuery] = useState('');
   const [songQuery, setSongQuery] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (artistQuery && songQuery) {
       dispatch(searchLyrics(artistQuery, songQuery));

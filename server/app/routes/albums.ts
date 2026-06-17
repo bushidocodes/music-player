@@ -1,6 +1,7 @@
 import express from 'express';
+import type { AlbumRepository } from '../../db/models/types.js';
 
-export default function createAlbumsRouter(Album) {
+export default function createAlbumsRouter(Album: AlbumRepository) {
   const router = express.Router();
 
   router.get('/', async (req, res, next) => {
@@ -16,7 +17,7 @@ export default function createAlbumsRouter(Album) {
     try {
       const album = await Album.scope('defaultScope', 'populated').findByPk(id);
       if (!album) {
-        const err = new Error('Album not found');
+        const err = new Error('Album not found') as Error & { status?: number };
         err.status = 404;
         return next(err);
       }
@@ -31,7 +32,7 @@ export default function createAlbumsRouter(Album) {
 
   router.get('/:albumId/image', (req, res, next) => {
     if (!req.album.songs || req.album.songs.length === 0) {
-      const err = new Error('Album has no songs');
+      const err = new Error('Album has no songs') as Error & { status?: number };
       err.status = 404;
       return next(err);
     }

@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import type { Playlist } from '../types';
 
-export default function Sidebar(props) {
+interface SidebarProps {
+  playlists: Playlist[];
+}
+
+export default function Sidebar(props: SidebarProps) {
 
   const playlists = props.playlists;
 
