@@ -1,4 +1,5 @@
 import express from 'express';
+import { HttpError } from '../http-error.js';
 import type { AlbumRepository } from '../../db/models/types.js';
 
 export default function createAlbumsRouter(Album: AlbumRepository) {
@@ -17,9 +18,7 @@ export default function createAlbumsRouter(Album: AlbumRepository) {
     try {
       const album = await Album.scope('defaultScope', 'populated').findByPk(id);
       if (!album) {
-        const err = new Error('Album not found') as Error & { status?: number };
-        err.status = 404;
-        return next(err);
+        return next(new HttpError('Album not found', 404));
       }
       req.album = album;
       next();
@@ -32,9 +31,7 @@ export default function createAlbumsRouter(Album: AlbumRepository) {
 
   router.get('/:albumId/image', (req, res, next) => {
     if (!req.album.songs || req.album.songs.length === 0) {
-      const err = new Error('Album has no songs') as Error & { status?: number };
-      err.status = 404;
-      return next(err);
+      return next(new HttpError('Album has no songs', 404));
     }
     res.redirect(`/api/songs/${req.album.songs[0].id}/image`);
   });

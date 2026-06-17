@@ -58,6 +58,6 @@ export const addSongToPlaylist = (playlistId: number | undefined, songId: number
   const selectedPlaylist = getState().playlists.selected;
   dispatch(receivePlaylist({
     ...selectedPlaylist,
-    songs: [...selectedPlaylist.songs!, convertSong(song)],
+    songs: [...(selectedPlaylist.songs ?? []), convertSong(song)],
   } as Playlist));
 };

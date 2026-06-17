@@ -1,4 +1,5 @@
 import express from 'express';
+import { HttpError } from '../http-error.js';
 import http from 'http';
 import https from 'https';
 import { PassThrough, Readable } from 'stream';
@@ -49,9 +50,7 @@ export default function createSongsRouter(Song: SongRepository) {
     try {
       const song = await Song.scope('defaultScope', 'populated').findByPk(id);
       if (!song) {
-        const err = new Error('Song not found') as Error & { status?: number };
-        err.status = 404;
-        return next(err);
+        return next(new HttpError('Song not found', 404));
       }
       req.song = song;
       next();
