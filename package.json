@@ -4,6 +4,7 @@
   "description": "A generated project at Fullstack Academy",
   "type": "module",
   "main": "server/start.ts",
+  "packageManager": "pnpm@11.5.0",
   "scripts": {
     "start": "vite & tsx watch server/start.ts",
     "build": "vite build",
