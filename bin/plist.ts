@@ -31,10 +31,18 @@ function classify(raw: string): { kind: 'open' | 'close' | 'selfclose'; name: st
 }
 
 export function parsePlist(xml: string): PlistValue {
-  const body = xml
+  let body = xml
     .replace(/<\?xml[^>]*\?>/g, '')
-    .replace(/<!DOCTYPE[^>]*>/g, '')
-    .replace(/<!--[\s\S]*?-->/g, '');
+    .replace(/<!DOCTYPE[^>]*>/g, '');
+
+  // Loop until stable: a single lazy pass can leave `<!--` behind when
+  // comments are adjacent (e.g. `<!--a--><!--b` strips the first but not the
+  // second opener). Repeating until idempotent closes that gap.
+  let prev: string;
+  do {
+    prev = body;
+    body = body.replace(/<!--[\s\S]*?-->/g, '');
+  } while (body !== prev);
 
   const tokens: Token[] = [];
   const re = /<([^>]+)>|([^<]+)/g;
