@@ -21,7 +21,7 @@ export default tseslint.config(
       },
 
       parser: tseslint.parser,
-      ecmaVersion: 2022,
+      ecmaVersion: 2025,
       sourceType: "module",
     },
 
