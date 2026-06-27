@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import createLyricsRouter from './lyrics.js';
 
-const axiosStub = { get: async () => ({ data: {} }) };
-const router = createLyricsRouter(axiosStub);
+let fetchStub = async () => ({ ok: true, json: async () => ({}) });
+const router = createLyricsRouter((url) => fetchStub(url));
 
 const getLyrics = router.stack.find(
   l => l.route && l.route.path === '/:artist/:song' && l.route.methods.get
@@ -10,7 +10,7 @@ const getLyrics = router.stack.find(
 
 describe('GET /api/lyrics/:artist/:song', () => {
   it('returns the lyric string when the external API finds a match', async () => {
-    axiosStub.get = async () => ({ data: { lyrics: 'Hello from the other side' } });
+    fetchStub = async () => ({ ok: true, json: async () => ({ lyrics: 'Hello from the other side' }) });
     const req = { params: { artist: 'Adele', song: 'Hello' } };
     let sent;
     await getLyrics(req, { send: b => { sent = b; } }, () => {});
@@ -18,7 +18,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
   });
 
   it('returns null lyric when the API response has no lyrics field', async () => {
-    axiosStub.get = async () => ({ data: {} });
+    fetchStub = async () => ({ ok: true, json: async () => ({}) });
     const req = { params: { artist: 'Unknown', song: 'Unknown' } };
     let sent;
     await getLyrics(req, { send: b => { sent = b; } }, () => {});
@@ -27,7 +27,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
 
   it('forwards API errors to the error handler', async () => {
     const apiErr = new Error('Service unavailable');
-    axiosStub.get = async () => { throw apiErr; };
+    fetchStub = async () => { throw apiErr; };
     const req = { params: { artist: 'Adele', song: 'Hello' } };
     let err;
     await getLyrics(req, {}, e => { err = e; });
@@ -36,7 +36,7 @@ describe('GET /api/lyrics/:artist/:song', () => {
 
   it('URL-encodes special characters in the artist and song names', async () => {
     let capturedUrl;
-    axiosStub.get = async url => { capturedUrl = url; return { data: { lyrics: '' } }; };
+    fetchStub = async url => { capturedUrl = url; return { ok: true, json: async () => ({ lyrics: '' }) }; };
     const req = { params: { artist: 'AC/DC', song: 'Back in Black' } };
     await getLyrics(req, { send: () => {} }, () => {});
     expect(capturedUrl).toContain('AC%2FDC');

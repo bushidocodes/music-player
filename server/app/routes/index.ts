@@ -1,5 +1,4 @@
 import express from 'express';
-import axios from 'axios';
 import { Song, Album, Artist, Playlist } from '../../db/models/index.js';
 import createArtistsRouter from './artists.js';
 import createAlbumsRouter from './albums.js';
@@ -22,6 +21,6 @@ router.use('/artists', createArtistsRouter(Artist as unknown as ArtistRepository
 router.use('/albums', createAlbumsRouter(Album as unknown as AlbumRepository));
 router.use('/playlists', createPlaylistsRouter(Playlist as unknown as PlaylistRepository));
 router.use('/songs', createSongsRouter(Song as unknown as SongRepository));
-router.use('/lyrics', createLyricsRouter(axios));
+router.use('/lyrics', createLyricsRouter(fetch));
 
 router.use((req, res) => res.status(404).end());
