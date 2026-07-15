@@ -1,8 +1,6 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
-
-import SidebarContainer from '../containers/SidebarContainer';
 import PlayerContainer from '../containers/PlayerContainer';
+import SidebarContainer from '../containers/SidebarContainer';
 
 export default function App() {
   return (

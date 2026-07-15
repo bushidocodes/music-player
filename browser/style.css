@@ -1,12 +1,15 @@
 * {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
 
 body {
   background: #222222;
-  padding-bottom: 56px; }
+  padding-bottom: 56px;
+}
 
 #main {
-  padding-left: 0; }
+  padding-left: 0;
+}
 
 sidebar {
   position: fixed;
@@ -17,29 +20,40 @@ sidebar {
   height: calc(100vh - 56px);
   width: inherit;
   overflow-y: auto;
-  border-right: 2px solid #555; }
-  sidebar .playlist-item {
+  border-right: 2px solid #555;
+}
+sidebar .playlist-item {
   margin-left: 10px;
-  padding-left:10px; }
-  sidebar::-webkit-scrollbar{
-    width: 10px;
-    background-color: #222; }
-  sidebar::-webkit-scrollbar-thumb{
-    background-color: black;
-    -webkit-border-radius: 1ex; }
-  sidebar .logo {
-    width: 100%;
-    padding: 15px; }
-  sidebar section > * {
-    padding: 0 15px; }
-  sidebar .menu-item {
-    transition: border-left, 0.2s; }
-    sidebar .menu-item a {
-      color: #c8c8c8; }
-      sidebar .menu-item a:hover {
-        color: white; }
-    sidebar .menu-item.active, sidebar .menu-item:hover {
-      border-left: 3px solid #00bc8c; }
+  padding-left: 10px;
+}
+sidebar::-webkit-scrollbar {
+  width: 10px;
+  background-color: #222;
+}
+sidebar::-webkit-scrollbar-thumb {
+  background-color: black;
+  -webkit-border-radius: 1ex;
+}
+sidebar .logo {
+  width: 100%;
+  padding: 15px;
+}
+sidebar section > * {
+  padding: 0 15px;
+}
+sidebar .menu-item {
+  transition: border-left, 0.2s;
+}
+sidebar .menu-item a {
+  color: #c8c8c8;
+}
+sidebar .menu-item a:hover {
+  color: white;
+}
+sidebar .menu-item.active,
+sidebar .menu-item:hover {
+  border-left: 3px solid #00bc8c;
+}
 
 footer {
   position: fixed;
@@ -50,14 +64,19 @@ footer {
   height: 56px;
   border-top: 1px solid #222;
   border-bottom: 1px solid #222;
-  padding: 8px; }
-  footer .bar {
-    overflow: hidden;
-    padding: 9px; }
-  footer .progress {
-    cursor: pointer; }
-  footer .progress-bar {
-    transition: none !important; }
+  padding: 8px;
+}
+footer .bar {
+  overflow: hidden;
+  padding: 9px;
+}
+footer .progress {
+  cursor: pointer;
+}
+footer .progress-bar {
+  transition: none !important;
+}
 
 .album img {
-  height: 300px; }
+  height: 300px;
+}

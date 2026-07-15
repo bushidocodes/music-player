@@ -1,23 +1,17 @@
-import {
-  RECEIVE_PLAYLISTS,
-  RECEIVE_PLAYLIST,
-} from '../constants';
-
+import { RECEIVE_PLAYLIST, RECEIVE_PLAYLISTS } from '../constants';
+import type { AppAction, PlaylistsState } from '../types';
 import { convertSong } from '../utils';
-import type { PlaylistsState, AppAction } from '../types';
 
 const initialPlaylistsState: PlaylistsState = {
   selected: {},
-  list: []
+  list: [],
 };
 
 export default function playlistsReducer(
   state: PlaylistsState = initialPlaylistsState,
   action: AppAction
 ): PlaylistsState {
-
   switch (action.type) {
-
     case RECEIVE_PLAYLISTS:
       return { ...state, list: action.playlists };
 
@@ -32,7 +26,5 @@ export default function playlistsReducer(
 
     default:
       return state;
-
   }
-
 }

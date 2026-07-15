@@ -6,9 +6,7 @@ type PlistValue =
   | PlistValue[]
   | { [k: string]: PlistValue };
 
-type Token =
-  | { type: 'tag'; raw: string }
-  | { type: 'text'; value: string };
+type Token = { type: 'tag'; raw: string } | { type: 'text'; value: string };
 
 function decodeEntities(s: string): string {
   return s
@@ -16,13 +14,18 @@ function decodeEntities(s: string): string {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) =>
+      String.fromCodePoint(parseInt(h, 16))
+    )
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
     .replace(/&amp;/g, '&'); // decode last so we don't double-decode escaped entities
 }
 
 // classify(rawTag) -> { kind: 'open'|'close'|'selfclose', name: String }
-function classify(raw: string): { kind: 'open' | 'close' | 'selfclose'; name: string } {
+function classify(raw: string): {
+  kind: 'open' | 'close' | 'selfclose';
+  name: string;
+} {
   const t = raw.trim();
   if (t.startsWith('/')) return { kind: 'close', name: t.slice(1).trim() };
   const selfClose = t.endsWith('/');
@@ -31,9 +34,7 @@ function classify(raw: string): { kind: 'open' | 'close' | 'selfclose'; name: st
 }
 
 export function parsePlist(xml: string): PlistValue {
-  let body = xml
-    .replace(/<\?xml[^>]*\?>/g, '')
-    .replace(/<!DOCTYPE[^>]*>/g, '');
+  let body = xml.replace(/<\?xml[^>]*\?>/g, '').replace(/<!DOCTYPE[^>]*>/g, '');
 
   // Loop until stable: a single lazy pass can leave `<!--` behind when
   // comments are adjacent (e.g. `<!--a--><!--b` strips the first but not the
@@ -49,7 +50,8 @@ export function parsePlist(xml: string): PlistValue {
   let m: RegExpExecArray | null;
   while ((m = re.exec(body)) !== null) {
     if (m[1] !== undefined) tokens.push({ type: 'tag', raw: m[1] });
-    else if (m[2].trim() !== '') tokens.push({ type: 'text', value: decodeEntities(m[2]) });
+    else if (m[2].trim() !== '')
+      tokens.push({ type: 'text', value: decodeEntities(m[2]) });
   }
 
   let pos = 0;
@@ -57,9 +59,11 @@ export function parsePlist(xml: string): PlistValue {
   function readText(): string {
     let text = '';
     const cur = tokens[pos];
-    if (cur && cur.type === 'text') text = (tokens[pos++] as { type: 'text'; value: string }).value;
+    if (cur && cur.type === 'text')
+      text = (tokens[pos++] as { type: 'text'; value: string }).value;
     const next = tokens[pos];
-    if (next && next.type === 'tag' && classify(next.raw).kind === 'close') pos++;
+    if (next && next.type === 'tag' && classify(next.raw).kind === 'close')
+      pos++;
     return text;
   }
 
@@ -82,7 +86,8 @@ export function parsePlist(xml: string): PlistValue {
       case 'plist': {
         const value = parseValue();
         const next = tokens[pos];
-        if (next && next.type === 'tag' && classify(next.raw).kind === 'close') pos++;
+        if (next && next.type === 'tag' && classify(next.raw).kind === 'close')
+          pos++;
         return value;
       }
       case 'true':
@@ -93,8 +98,13 @@ export function parsePlist(xml: string): PlistValue {
         const obj: { [k: string]: PlistValue } = {};
         if (c.kind === 'selfclose') return obj;
         while (pos < tokens.length) {
-          const next = classify((tokens[pos] as { type: 'tag'; raw: string }).raw);
-          if (next.kind === 'close' && next.name === 'dict') { pos++; break; }
+          const next = classify(
+            (tokens[pos] as { type: 'tag'; raw: string }).raw
+          );
+          if (next.kind === 'close' && next.name === 'dict') {
+            pos++;
+            break;
+          }
           pos++; // consume <key>
           const key = readText();
           obj[key] = parseValue();
@@ -105,8 +115,13 @@ export function parsePlist(xml: string): PlistValue {
         const arr: PlistValue[] = [];
         if (c.kind === 'selfclose') return arr;
         while (pos < tokens.length) {
-          const next = classify((tokens[pos] as { type: 'tag'; raw: string }).raw);
-          if (next.kind === 'close' && next.name === 'array') { pos++; break; }
+          const next = classify(
+            (tokens[pos] as { type: 'tag'; raw: string }).raw
+          );
+          if (next.kind === 'close' && next.name === 'array') {
+            pos++;
+            break;
+          }
           arr.push(parseValue());
         }
         return arr;

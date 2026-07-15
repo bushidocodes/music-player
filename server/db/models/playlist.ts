@@ -1,29 +1,38 @@
-import { DataTypes } from 'sequelize';
 import type { Model } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import db from '../db.js';
 import unique from './plugins/unique-through.js';
 import { toJSONWithoutSongUrls } from './serialize.js';
 
-const Playlist = db.define('playlist', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    set(val: unknown) {
-      this.setDataValue('name', String(val).trim());
-    }
+const Playlist = db.define(
+  'playlist',
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      set(val: unknown) {
+        this.setDataValue('name', String(val).trim());
+      },
+    },
+    artists: unique('artists').through('songs'),
   },
-  artists: unique('artists').through('songs')
-}, {
-  scopes: {
-    populated: () => ({
-      include: [{
-        model: db.model('song').scope(['defaultScope', 'populated'])
-      }]
-    })
+  {
+    scopes: {
+      populated: () => ({
+        include: [
+          {
+            model: db.model('song').scope(['defaultScope', 'populated']),
+          },
+        ],
+      }),
+    },
   }
-});
+);
 
-(Playlist.prototype as any).addAndReturnSong = async function (this: any, songId: number | string) {
+(Playlist.prototype as any).addAndReturnSong = async function (
+  this: any,
+  songId: number | string
+) {
   songId = String(songId);
   const [, song] = await Promise.all([
     this.addSong(songId),

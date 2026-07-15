@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+import { useState } from 'react';
 import type { NavigateFunction } from 'react-router-dom';
-import { useAppDispatch } from '../hooks';
-import NewPlaylist from '../components/NewPlaylist';
 import { addNewPlaylist } from '../action-creators/playlists';
+import NewPlaylist from '../components/NewPlaylist';
+import { useAppDispatch } from '../hooks';
 
 interface NewPlaylistContainerProps {
   navigate: NavigateFunction;
 }
 
-export default function NewPlaylistContainer({ navigate }: NewPlaylistContainerProps) {
+export default function NewPlaylistContainer({
+  navigate,
+}: NewPlaylistContainerProps) {
   const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -28,7 +30,8 @@ export default function NewPlaylistContainer({ navigate }: NewPlaylistContainerP
 
   let warning = '';
   if (!inputValue && dirty) warning = 'You must enter a name';
-  else if (inputValue.length > 16) warning = 'Name must be less than 16 characters';
+  else if (inputValue.length > 16)
+    warning = 'Name must be less than 16 characters';
 
   return (
     <NewPlaylist

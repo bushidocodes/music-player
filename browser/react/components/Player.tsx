@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { Song } from '../types';
 
 interface PlayerProps {
@@ -12,7 +10,6 @@ interface PlayerProps {
 }
 
 export default function Player(props: PlayerProps) {
-
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
   const progress = props.progress;
@@ -22,13 +19,15 @@ export default function Player(props: PlayerProps) {
 
   return (
     <footer>
-      <div style={!currentSong.id ? {display: 'none'} : undefined}>
+      <div style={!currentSong.id ? { display: 'none' } : undefined}>
         <div className="float-start">
           <button className="btn btn-secondary" onClick={prev}>
             <span className="bi bi-skip-backward-fill"></span>
           </button>
           <button className="btn btn-secondary" onClick={toggle}>
-            <span className={isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'}></span>
+            <span
+              className={isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'}
+            ></span>
           </button>
           <button className="btn btn-secondary" onClick={next}>
             <span className="bi bi-skip-forward-fill"></span>
@@ -36,10 +35,13 @@ export default function Player(props: PlayerProps) {
         </div>
         <div className="bar">
           <div className="progress">
-            <div className="progress-bar" style={{width: `${progress * 100}%`}}></div>
+            <div
+              className="progress-bar"
+              style={{ width: `${progress * 100}%` }}
+            ></div>
           </div>
         </div>
       </div>
     </footer>
   );
-};
+}

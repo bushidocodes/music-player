@@ -1,19 +1,25 @@
-import React, { useEffect, useCallback } from 'react';
-import { useAppSelector, useAppDispatch } from '../hooks';
+import { useCallback, useEffect } from 'react';
+import {
+  next,
+  previous,
+  setProgress,
+  toggleSong,
+} from '../action-creators/player';
 import AUDIO from '../audio';
-import { previous, next, setProgress, toggleSong } from '../action-creators/player';
 import Player from '../components/Player';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import type { Song } from '../types';
 
 export default function PlayerContainer() {
-  const player = useAppSelector(state => state.player);
+  const player = useAppSelector((state) => state.player);
   const dispatch = useAppDispatch();
 
   // Stable callbacks — dispatch is always the same reference
   const handleNext = useCallback(() => dispatch(next()), [dispatch]);
   const handlePrev = useCallback(() => dispatch(previous()), [dispatch]);
   const handleToggle = useCallback(
-    () => dispatch(toggleSong(player.currentSong as Song, player.currentSongList)),
+    () =>
+      dispatch(toggleSong(player.currentSong as Song, player.currentSongList)),
     [dispatch, player.currentSong, player.currentSongList]
   );
 

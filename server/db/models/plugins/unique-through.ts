@@ -23,14 +23,19 @@ export default function unique(deepColumn: string) {
           const seen = new Set<number>();
           // The through association may not be eager-loaded (e.g. a plain
           // findAll), leaving this[nearColumn] undefined; treat it as empty.
-          const nearModels = (this[nearColumn] ?? []) as Array<Record<string, unknown>>;
+          const nearModels = (this[nearColumn] ?? []) as Array<
+            Record<string, unknown>
+          >;
           const collection = nearModels
-            .flatMap(near => (near[deepColumn] as unknown[]) ?? [])
-            .filter((model): model is Identified => model !== null && typeof model === 'object')
-            .filter(model => !seen.has(model.id) && seen.add(model.id));
+            .flatMap((near) => (near[deepColumn] as unknown[]) ?? [])
+            .filter(
+              (model): model is Identified =>
+                model !== null && typeof model === 'object'
+            )
+            .filter((model) => !seen.has(model.id) && seen.add(model.id));
           return (this[cacheKey] = collection.length ? collection : []);
-        }
+        },
       };
-    }
+    },
   };
 }

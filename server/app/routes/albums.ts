@@ -1,6 +1,6 @@
 import express from 'express';
-import { HttpError } from '../http-error.js';
 import type { AlbumRepository } from '../../db/models/types.js';
+import { HttpError } from '../http-error.js';
 
 export default function createAlbumsRouter(Album: AlbumRepository) {
   const router = express.Router();
@@ -39,7 +39,9 @@ export default function createAlbumsRouter(Album: AlbumRepository) {
   router.get('/:albumId/songs/', (req, res) => res.json(req.album.songs));
 
   router.get('/:albumId/songs/:songId', (req, res) => {
-    const songToSend = req.album.songs.find(song => song.id === Number(req.params.songId));
+    const songToSend = req.album.songs.find(
+      (song) => song.id === Number(req.params.songId)
+    );
     if (!songToSend) return res.sendStatus(404);
     res.json(songToSend);
   });

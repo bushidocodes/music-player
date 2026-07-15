@@ -1,26 +1,24 @@
 import {
-  START_PLAYING,
-  STOP_PLAYING,
   SET_CURRENT_SONG,
   SET_LIST,
-  SET_PROGRESS
+  SET_PROGRESS,
+  START_PLAYING,
+  STOP_PLAYING,
 } from '../constants';
-import type { PlayerState, AppAction } from '../types';
+import type { AppAction, PlayerState } from '../types';
 
 export const initialPlayerState: PlayerState = {
   currentSong: {},
   currentSongList: [],
   isPlaying: false,
-  progress: 0
+  progress: 0,
 };
 
 export default function playerReducer(
   state: PlayerState = initialPlayerState,
   action: AppAction
 ): PlayerState {
-
   switch (action.type) {
-
     case SET_CURRENT_SONG:
       return { ...state, currentSong: action.song };
 
@@ -38,7 +36,5 @@ export default function playerReducer(
 
     default:
       return state;
-
   }
-
 }

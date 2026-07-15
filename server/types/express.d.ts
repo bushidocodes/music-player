@@ -1,8 +1,8 @@
 import type {
-  SongInstance,
   AlbumInstance,
   ArtistInstance,
   PlaylistInstance,
+  SongInstance,
 } from '../db/models/types.js';
 
 // The route param handlers attach the looked-up row to req; declare those
@@ -17,5 +17,3 @@ declare global {
     }
   }
 }
-
-export {};

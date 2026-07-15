@@ -1,32 +1,31 @@
 import AUDIO from '../audio';
 
 import {
-  START_PLAYING,
-  STOP_PLAYING,
   SET_CURRENT_SONG,
   SET_LIST,
   SET_PROGRESS,
+  START_PLAYING,
+  STOP_PLAYING,
 } from '../constants';
-
-import { skip } from '../utils';
-import type { Song, AppAction } from '../types';
 import type { AppThunk } from '../store';
+import type { AppAction, Song } from '../types';
+import { skip } from '../utils';
 
 export const play = (): AppAction => {
-  AUDIO.play().catch(err => {
+  AUDIO.play().catch((err) => {
     if (err.name !== 'AbortError') {
       console.error('Playback failed:', err);
     }
   });
   return {
-    type: START_PLAYING
+    type: START_PLAYING,
   };
 };
 
 export const pause = (): AppAction => {
   AUDIO.pause();
   return {
-    type: STOP_PLAYING
+    type: STOP_PLAYING,
   };
 };
 
@@ -48,21 +47,21 @@ export const previous = (): AppThunk => {
 
 export const setCurrentSong = (song: Song): AppAction => ({
   type: SET_CURRENT_SONG,
-  song
+  song,
 });
 
 export const setCurrentList = (songList: Song[]): AppAction => ({
   type: SET_LIST,
-  songList
+  songList,
 });
 
 export const setProgress = (progress: number): AppAction => ({
-    type: SET_PROGRESS,
-    progress
+  type: SET_PROGRESS,
+  progress,
 });
 
 export const load = (song: Song, list: Song[]): AppThunk => {
-  return dispatch => {
+  return (dispatch) => {
     AUDIO.src = song.audioUrl!;
     AUDIO.load();
     dispatch(setCurrentList(list));
@@ -71,7 +70,7 @@ export const load = (song: Song, list: Song[]): AppThunk => {
 };
 
 export const startSong = (song: Song, list: Song[]): AppThunk => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(pause());
     dispatch(load(song, list));
     dispatch(play());

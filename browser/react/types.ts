@@ -1,17 +1,17 @@
 import type {
-  SET_LYRICS,
-  RECEIVE_ALBUMS,
   RECEIVE_ALBUM,
-  RECEIVE_ARTISTS,
+  RECEIVE_ALBUMS,
   RECEIVE_ARTIST,
-  RECEIVE_PLAYLISTS,
+  RECEIVE_ARTISTS,
   RECEIVE_PLAYLIST,
+  RECEIVE_PLAYLISTS,
   RECEIVE_SONGS,
-  START_PLAYING,
-  STOP_PLAYING,
   SET_CURRENT_SONG,
   SET_LIST,
+  SET_LYRICS,
   SET_PROGRESS,
+  START_PLAYING,
+  STOP_PLAYING,
 } from './constants';
 
 // ---------------------------------------------------------------------------
@@ -99,7 +99,12 @@ export type AppAction =
   | { type: typeof RECEIVE_ALBUMS; albums: Album[] }
   | { type: typeof RECEIVE_ALBUM; album: Album }
   | { type: typeof RECEIVE_ARTISTS; artists: Artist[] }
-  | { type: typeof RECEIVE_ARTIST; artist: Artist; albums: Album[]; songs: Song[] }
+  | {
+      type: typeof RECEIVE_ARTIST;
+      artist: Artist;
+      albums: Album[];
+      songs: Song[];
+    }
   | { type: typeof RECEIVE_PLAYLISTS; playlists: Playlist[] }
   | { type: typeof RECEIVE_PLAYLIST; playlist: Playlist }
   | { type: typeof RECEIVE_SONGS; songs: Song[] }

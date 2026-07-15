@@ -10,7 +10,7 @@ npm run seed         # Seed database with music.xml / iTunes library data
 npm start            # Dev server: Vite (:3000) + tsx-watched API (:1337)
 npm test             # Run server-side tests (Vitest)
 npm run typecheck    # Type-check both the browser and server TS projects
-npm run lint         # ESLint (typescript-eslint)
+npm run lint         # Biome (lint + format check)
 npm run build        # Production build (Vite → public/)
 ```
 

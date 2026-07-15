@@ -1,31 +1,38 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import {
-  HashRouter, Routes, Route, Navigate,
-  Outlet, useParams, useNavigate, useOutletContext,
-} from 'react-router-dom';
 import { Provider } from 'react-redux';
-
-import AlbumsContainer from './containers/AlbumsContainer';
+import {
+  HashRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
+import { getAlbumById, receiveAlbums } from './action-creators/albums';
+import { getArtistById, receiveArtists } from './action-creators/artists';
+import {
+  getPlaylistById,
+  loadAllSongs,
+  receivePlaylists,
+} from './action-creators/playlists';
+import Albums from './components/Albums';
+import App from './components/App';
+import Songs from './components/Songs';
 import AlbumContainer from './containers/AlbumContainer';
+import AlbumsContainer from './containers/AlbumsContainer';
 import ArtistContainer from './containers/ArtistContainer';
 import FilterableArtistsContainer from './containers/FilterableArtistsContainer';
+import LyricsContainer from './containers/LyricsContainer';
 import NewPlaylistContainer from './containers/NewPlaylistContainer';
 import PlaylistContainer from './containers/PlaylistContainer';
-import LyricsContainer from './containers/LyricsContainer';
-import StationsContainer from './containers/StationsContainer';
 import StationContainer from './containers/StationContainer';
-
-import App from './components/App';
-import Albums from './components/Albums';
-import Songs from './components/Songs';
-
+import StationsContainer from './containers/StationsContainer';
 import store from './store';
-import { apiFetch } from './utils';
-import { receiveAlbums, getAlbumById } from './action-creators/albums';
-import { receiveArtists, getArtistById } from './action-creators/artists';
-import { receivePlaylists, getPlaylistById, loadAllSongs } from './action-creators/playlists';
 import type { Album, Artist, Playlist, Song, ToggleOne } from './types';
+import { apiFetch } from './utils';
 
 interface ArtistOutletContext {
   albums: Album[];
@@ -58,13 +65,17 @@ function AppWrapper() {
 
 function AlbumRoute() {
   const { albumId } = useParams();
-  useEffect(() => { store.dispatch(getAlbumById(albumId!)); }, [albumId]);
+  useEffect(() => {
+    store.dispatch(getAlbumById(albumId!));
+  }, [albumId]);
   return <AlbumContainer />;
 }
 
 function ArtistRoute() {
   const { artistId } = useParams();
-  useEffect(() => { store.dispatch(getArtistById(artistId!)); }, [artistId]);
+  useEffect(() => {
+    store.dispatch(getArtistById(artistId!));
+  }, [artistId]);
   return <ArtistContainer />;
 }
 
@@ -74,12 +85,22 @@ function ArtistAlbums() {
 }
 
 function ArtistSongs() {
-  const { songs, currentSong, isPlaying, toggleOne } = useOutletContext<ArtistOutletContext>();
-  return <Songs songs={songs} currentSong={currentSong} isPlaying={isPlaying} toggleOne={toggleOne} />;
+  const { songs, currentSong, isPlaying, toggleOne } =
+    useOutletContext<ArtistOutletContext>();
+  return (
+    <Songs
+      songs={songs}
+      currentSong={currentSong}
+      isPlaying={isPlaying}
+      toggleOne={toggleOne}
+    />
+  );
 }
 
 function StationsLayout() {
-  useEffect(() => { store.dispatch(loadAllSongs()); }, []);
+  useEffect(() => {
+    store.dispatch(loadAllSongs());
+  }, []);
   return <Outlet />;
 }
 
@@ -90,7 +111,9 @@ function StationRoute() {
 
 function PlaylistRoute() {
   const { playlistId } = useParams();
-  useEffect(() => { store.dispatch(getPlaylistById(playlistId!)); }, [playlistId]);
+  useEffect(() => {
+    store.dispatch(getPlaylistById(playlistId!));
+  }, [playlistId]);
   return <PlaylistContainer />;
 }
 

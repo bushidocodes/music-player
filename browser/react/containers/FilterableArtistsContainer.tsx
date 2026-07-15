@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { useAppSelector } from '../hooks';
-import FilterInput from '../components/FilterInput';
+import { useState } from 'react';
 import Artists from '../components/Artists';
+import FilterInput from '../components/FilterInput';
+import { useAppSelector } from '../hooks';
 
 export default function FilterableArtistsContainer() {
-  const artists = useAppSelector(state => state.artists.list);
+  const artists = useAppSelector((state) => state.artists.list);
   const [inputValue, setInputValue] = useState('');
 
-  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => setInputValue(evt.target.value);
-  const filteredArtists = artists.filter(artist => artist.name.match(inputValue));
+  const handleChange = (evt: ChangeEvent<HTMLInputElement>) =>
+    setInputValue(evt.target.value);
+  const filteredArtists = artists.filter((artist) =>
+    artist.name.match(inputValue)
+  );
 
   return (
     <div>

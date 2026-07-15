@@ -1,6 +1,4 @@
-interface LogFn {
-  (pieces: TemplateStringsArray, ...cooked: unknown[]): void;
-}
+type LogFn = (pieces: TemplateStringsArray, ...cooked: unknown[]) => void;
 
 interface Log extends LogFn {
   hush: () => void;
@@ -15,12 +13,14 @@ const log = ((pieces: TemplateStringsArray, ...cooked: unknown[]): void => {
 log.hush = () => void 0;
 
 log.debug = log.hush;
-log.error = function (pieces: TemplateStringsArray, ...cooked: unknown[]): void {
+log.error = (pieces: TemplateStringsArray, ...cooked: unknown[]): void => {
   console.error(interp(pieces, cooked));
 };
 
 function interp(pieces: TemplateStringsArray, cooked: unknown[]): string {
-  return pieces.map((p, i) => `${p}${i < cooked.length ? cooked[i] : ''}`).join('');
+  return pieces
+    .map((p, i) => `${p}${i < cooked.length ? cooked[i] : ''}`)
+    .join('');
 }
 
 export default log;

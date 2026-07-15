@@ -1,4 +1,3 @@
-import React from 'react';
 import Songs from '../components/Songs';
 
 import type { Album, Song, ToggleOne } from '../types';
@@ -11,7 +10,6 @@ interface AlbumProps {
 }
 
 export default function Album(props: AlbumProps) {
-
   const album = props.selectedAlbum;
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
@@ -20,15 +18,15 @@ export default function Album(props: AlbumProps) {
   return (
     <div className="album">
       <div>
-        <h3>{ album.name }</h3>
-        <img src={ album.imageUrl } alt={ album.name } className="img-thumbnail"/>
+        <h3>{album.name}</h3>
+        <img src={album.imageUrl} alt={album.name} className="img-thumbnail" />
       </div>
       <Songs
         songs={album.songs}
         currentSong={currentSong}
         isPlaying={isPlaying}
-        toggleOne={toggleOne}/>
+        toggleOne={toggleOne}
+      />
     </div>
   );
-
 }

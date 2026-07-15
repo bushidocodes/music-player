@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { ChangeEvent, FormEvent } from 'react';
 
 interface NewPlaylistProps {
@@ -10,18 +8,17 @@ interface NewPlaylistProps {
 }
 
 export default function NewPlaylist(props: NewPlaylistProps) {
-
   const handleChange = props.handleChange;
   const handleSubmit = props.handleSubmit;
   const warning = props.warning;
   const inputValue = props.inputValue;
 
   return (
-    <div className="p-3 border rounded" style={{marginTop: '20px'}}>
+    <div className="p-3 border rounded" style={{ marginTop: '20px' }}>
       <form onSubmit={handleSubmit}>
         <fieldset>
           <legend>New Playlist</legend>
-          { warning && <div className="alert alert-warning">{warning}</div> }
+          {warning && <div className="alert alert-warning">{warning}</div>}
           <div className="mb-3 row">
             <label className="col-2 col-form-label">Name</label>
             <div className="col-10">
@@ -38,7 +35,8 @@ export default function NewPlaylist(props: NewPlaylistProps) {
               <button
                 type="submit"
                 className="btn btn-success"
-                disabled={!!warning || !inputValue}>
+                disabled={!!warning || !inputValue}
+              >
                 Create Playlist
               </button>
             </div>
@@ -47,4 +45,4 @@ export default function NewPlaylist(props: NewPlaylistProps) {
       </form>
     </div>
   );
-};
+}

@@ -1,11 +1,11 @@
 import express from 'express';
-import { HttpError } from '../http-error.js';
+import fs from 'fs';
 import http from 'http';
 import https from 'https';
-import { PassThrough, Readable } from 'stream';
 import { parseStream } from 'music-metadata';
-import fs from 'fs';
+import { PassThrough, Readable } from 'stream';
 import type { SongRepository } from '../../db/models/types.js';
+import { HttpError } from '../http-error.js';
 
 const MAX_REDIRECTS = 10;
 function open(url: string): Readable {
@@ -19,16 +19,23 @@ function open(url: string): Readable {
       pass.destroy(new Error(`Too many redirects (max ${MAX_REDIRECTS})`));
       return;
     }
-    const get: typeof http.get = currentUrl.startsWith('https:') ? https.get : http.get;
-    get(currentUrl, response => {
+    const get: typeof http.get = currentUrl.startsWith('https:')
+      ? https.get
+      : http.get;
+    get(currentUrl, (response) => {
       const { statusCode, headers } = response;
-      if (statusCode && statusCode >= 300 && statusCode < 400 && headers.location) {
+      if (
+        statusCode &&
+        statusCode >= 300 &&
+        statusCode < 400 &&
+        headers.location
+      ) {
         response.resume();
         fetch(headers.location, redirectCount + 1);
       } else {
         response.pipe(pass);
       }
-    }).on('error', err => pass.destroy(err));
+    }).on('error', (err) => pass.destroy(err));
   }
   fetch(url, 0);
   return pass;
@@ -64,7 +71,9 @@ export default function createSongsRouter(Song: SongRepository) {
   router.get('/:songId/image', async (req, res, next) => {
     const stream = open(req.song.url);
     try {
-      const metadata = await parseStream(stream, undefined, { duration: false });
+      const metadata = await parseStream(stream, undefined, {
+        duration: false,
+      });
       stream.destroy();
       const pic = metadata.common.picture?.[0];
       pic

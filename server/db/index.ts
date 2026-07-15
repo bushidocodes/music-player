@@ -1,5 +1,5 @@
-import db from './db.js';
 import { styleText } from 'node:util';
+import db from './db.js';
 import './models/index.js';
 
 const syncedDbPromise = db.sync();

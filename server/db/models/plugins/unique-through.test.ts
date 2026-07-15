@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { DataTypes } from 'sequelize';
+import { describe, expect, it } from 'vitest';
 import unique from './unique-through.js';
 
 describe('unique (deep: String) through (near: String)', () => {
@@ -13,27 +13,28 @@ describe('unique (deep: String) through (near: String)', () => {
 
   describe('defines a getter', () => {
     let allArtists;
-    const [teganAndSara,
-           yeahYeahYeahs,
-           sleaterKinney,
-           miley,
-           joanJett] = allArtists = [{artist: 'Tegan and Sara', id: 0},
-                                     {artist: 'The Yeah Yeah Yeahs', id: 1},
-                                     {artist: 'Sleater Kinnety', id: 2},
-                                     {artist: 'Miley Cyrus', id: 3},
-                                     {artist: 'Joan Jett', id: 4}];
+    const [teganAndSara, yeahYeahYeahs, sleaterKinney, miley, joanJett] =
+      (allArtists = [
+        { artist: 'Tegan and Sara', id: 0 },
+        { artist: 'The Yeah Yeah Yeahs', id: 1 },
+        { artist: 'Sleater Kinnety', id: 2 },
+        { artist: 'Miley Cyrus', id: 3 },
+        { artist: 'Joan Jett', id: 4 },
+      ]);
 
     it('returns unique (by id) instances of the deep model via the through model', () => {
       const uniqueArtists = def.get.apply({
         songs: [
-          {title: 'Divided', artists: [teganAndSara]},
-          {title: 'Jumpers', artists: [sleaterKinney]},
-          {title: 'Heads Will Roll', artists: [yeahYeahYeahs]},
-          {title: 'Maps', artists: [yeahYeahYeahs]},
-          {title: 'Bad Reputation', artists: [miley, joanJett]}
-        ]
+          { title: 'Divided', artists: [teganAndSara] },
+          { title: 'Jumpers', artists: [sleaterKinney] },
+          { title: 'Heads Will Roll', artists: [yeahYeahYeahs] },
+          { title: 'Maps', artists: [yeahYeahYeahs] },
+          { title: 'Bad Reputation', artists: [miley, joanJett] },
+        ],
       });
-      expect([...uniqueArtists].sort((a, b) => a.id - b.id)).toEqual(allArtists);
+      expect([...uniqueArtists].sort((a, b) => a.id - b.id)).toEqual(
+        allArtists
+      );
     });
 
     it('returns [] when the through model has no entries', () => {
@@ -51,11 +52,8 @@ describe('unique (deep: String) through (near: String)', () => {
         getSongsCalled: 0,
         get songs() {
           ++this.getSongsCalled;
-          return [
-            {artists: [{id: 1}]},
-            {artists: [{id: 2}]}
-          ];
-        }
+          return [{ artists: [{ id: 1 }] }, { artists: [{ id: 2 }] }];
+        },
       };
       def.get.apply(spy);
       def.get.apply(spy);
