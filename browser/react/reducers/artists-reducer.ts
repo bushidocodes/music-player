@@ -1,23 +1,17 @@
-import {
-  RECEIVE_ARTISTS,
-  RECEIVE_ARTIST
-} from '../constants';
-
+import { RECEIVE_ARTIST, RECEIVE_ARTISTS } from '../constants';
+import type { AppAction, ArtistsState } from '../types';
 import { convertAlbums, convertSong } from '../utils';
-import type { ArtistsState, AppAction } from '../types';
 
 const initialArtistState: ArtistsState = {
   selected: {},
-  list: []
+  list: [],
 };
 
 export default function artistsReducer(
   state: ArtistsState = initialArtistState,
   action: AppAction
 ): ArtistsState {
-
   switch (action.type) {
-
     case RECEIVE_ARTISTS:
       return { ...state, list: action.artists };
 
@@ -33,7 +27,5 @@ export default function artistsReducer(
 
     default:
       return state;
-
   }
-
 }

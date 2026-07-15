@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { Song, ToggleOne } from '../types';
 
 interface SongsProps {
@@ -10,14 +8,13 @@ interface SongsProps {
 }
 
 export default function Songs(props: SongsProps) {
-
   const songs = props.songs;
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
   const toggle = props.toggleOne;
 
   return (
-    <table className='table'>
+    <table className="table">
       <thead>
         <tr>
           <th></th>
@@ -27,22 +24,34 @@ export default function Songs(props: SongsProps) {
         </tr>
       </thead>
       <tbody>
-        {
-          songs && songs.map(song => (
+        {songs &&
+          songs.map((song) => (
             <tr key={song.id}>
               <td>
-                <button className="btn btn-secondary btn-sm" onClick={() => toggle(song, songs)}>
-                  <span className={song.id === currentSong.id && isPlaying ? "bi bi-pause-fill" : "bi bi-play-fill"}></span>
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => toggle(song, songs)}
+                >
+                  <span
+                    className={
+                      song.id === currentSong.id && isPlaying
+                        ? 'bi bi-pause-fill'
+                        : 'bi bi-play-fill'
+                    }
+                  ></span>
                 </button>
               </td>
-              <td>{ song.name }</td>
+              <td>{song.name}</td>
               <td>
-                <span>{ song.artists ? song.artists.map(artist => artist.name).join(', ') : null }</span>
+                <span>
+                  {song.artists
+                    ? song.artists.map((artist) => artist.name).join(', ')
+                    : null}
+                </span>
               </td>
-              <td>{ song.genre }</td>
+              <td>{song.genre}</td>
             </tr>
-          ))
-        }
+          ))}
       </tbody>
     </table>
   );

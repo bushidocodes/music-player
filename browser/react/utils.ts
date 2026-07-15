@@ -1,4 +1,4 @@
-import type { Song, Album, Stations } from './types';
+import type { Album, Song, Stations } from './types';
 
 interface ApiFetchOptions {
   method?: string;
@@ -6,7 +6,10 @@ interface ApiFetchOptions {
   body?: unknown;
 }
 
-export async function apiFetch<T = unknown>(url: string, options: ApiFetchOptions = {}): Promise<T> {
+export async function apiFetch<T = unknown>(
+  url: string,
+  options: ApiFetchOptions = {}
+): Promise<T> {
   const { body, headers, ...rest } = options;
   const res = await fetch(url, {
     ...rest,
@@ -28,15 +31,20 @@ export const convertAlbum = (album: Album): Album => ({
 });
 
 export const convertAlbums = (albums: Album[]): Album[] =>
-  albums.map(album => convertAlbum(album));
+  albums.map((album) => convertAlbum(album));
 
 const mod = (num: number, m: number): number => ((num % m) + m) % m;
 
 export const skip = (
   interval: number,
-  { currentSongList, currentSong }: { currentSongList: Song[]; currentSong: Partial<Song> }
+  {
+    currentSongList,
+    currentSong,
+  }: { currentSongList: Song[]; currentSong: Partial<Song> }
 ): [Song, Song[]] => {
-  let idx = currentSongList.map(song => song.id).indexOf(currentSong.id ?? -1);
+  let idx = currentSongList
+    .map((song) => song.id)
+    .indexOf(currentSong.id ?? -1);
   idx = mod(idx + interval, currentSongList.length);
   const next = currentSongList[idx];
   return [next, currentSongList];

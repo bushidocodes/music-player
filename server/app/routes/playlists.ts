@@ -1,6 +1,6 @@
 import express from 'express';
-import { HttpError } from '../http-error.js';
 import type { PlaylistRepository } from '../../db/models/types.js';
+import { HttpError } from '../http-error.js';
 
 export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   const router = express.Router();
@@ -17,7 +17,9 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   router.post('/', async (req, res, next) => {
     const name = req.body && req.body.name && String(req.body.name).trim();
     if (!name) {
-      return next(new HttpError('name is required and must be a non-empty string', 400));
+      return next(
+        new HttpError('name is required and must be a non-empty string', 400)
+      );
     }
     try {
       const playlist = await Playlist.create({ name });
@@ -45,7 +47,9 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   router.put('/:playlistId', async (req, res, next) => {
     const name = req.body && req.body.name && String(req.body.name).trim();
     if (!name) {
-      return next(new HttpError('name is required and must be a non-empty string', 400));
+      return next(
+        new HttpError('name is required and must be a non-empty string', 400)
+      );
     }
     try {
       const playlist = await req.playlist.update({ name });
@@ -68,14 +72,19 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
 
   router.post('/:playlistId/songs', async (req, res, next) => {
     if (!req.body.id && !req.body.song) {
-      return next(new HttpError('Request body must include either id or song', 400));
+      return next(
+        new HttpError('Request body must include either id or song', 400)
+      );
     }
     const id = req.body.id || req.body.song.id;
     try {
       const song = await req.playlist.addAndReturnSong(id);
       res.status(201).json(song);
     } catch (err) {
-      if (err instanceof Error && err.name === 'SequelizeUniqueConstraintError') {
+      if (
+        err instanceof Error &&
+        err.name === 'SequelizeUniqueConstraintError'
+      ) {
         res.status(409).send('Song is already in the playlist.');
       } else {
         next(err);
@@ -84,7 +93,9 @@ export default function createPlaylistsRouter(Playlist: PlaylistRepository) {
   });
 
   router.get('/:playlistId/songs/:songId', (req, res) => {
-    const requestedSong = req.playlist.songs.find(song => song.id === Number(req.params.songId));
+    const requestedSong = req.playlist.songs.find(
+      (song) => song.id === Number(req.params.songId)
+    );
     if (!requestedSong) res.sendStatus(404);
     else res.json(requestedSong);
   });

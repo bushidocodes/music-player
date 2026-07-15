@@ -1,6 +1,6 @@
+import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import morgan from 'morgan';
 import * as env from '../../env/index.js';
 import type { ConfiguredApp } from '../types.js';
 

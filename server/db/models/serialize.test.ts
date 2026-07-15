@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { toJSONWithoutSongUrls } from './serialize.js';
 
 // Minimal stand-in for a Sequelize instance's get(): get({ plain: true })

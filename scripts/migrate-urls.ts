@@ -86,7 +86,9 @@ const urlMap: Record<string, string> = {
 };
 
 async function run() {
-  let updated = 0, deleted = 0, notFound = 0;
+  let updated = 0,
+    deleted = 0,
+    notFound = 0;
 
   for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
     // pragmatic any: db.query returns [result, metadata]; result shape is driver-specific
@@ -116,15 +118,23 @@ async function run() {
   `);
 
   // pragmatic any: COUNT(*) row shape is driver-specific
-  const [[{ count }]] = (await db.query(`SELECT COUNT(*) as count FROM songs`)) as [
-    Array<{ count: string }>,
-    unknown,
-  ];
-  console.log(`✓ Updated ${updated} URLs, deleted ${deleted} Jets Overhead songs`);
-  if (notFound) console.log(`  (${notFound} old URLs not found — already updated or missing)`);
+  const [[{ count }]] = (await db.query(
+    `SELECT COUNT(*) as count FROM songs`
+  )) as [Array<{ count: string }>, unknown];
+  console.log(
+    `✓ Updated ${updated} URLs, deleted ${deleted} Jets Overhead songs`
+  );
+  if (notFound)
+    console.log(
+      `  (${notFound} old URLs not found — already updated or missing)`
+    );
   console.log(`  ${count} songs remain in database`);
   db.close();
 }
 
 // pragmatic any: preserve original `err.message` access without altering runtime behavior
-run().catch((err: any) => { console.error(err.message); db.close(); process.exit(1); });
+run().catch((err: any) => {
+  console.error(err.message);
+  db.close();
+  process.exit(1);
+});

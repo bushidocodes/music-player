@@ -8,6 +8,6 @@ export default function (app: ConfiguredApp) {
       limit: 500,
       standardHeaders: 'draft-8',
       legacyHeaders: false,
-    }),
+    })
   );
 }

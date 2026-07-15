@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Playlist } from '../types';
 
@@ -7,30 +6,29 @@ interface SidebarProps {
 }
 
 export default function Sidebar(props: SidebarProps) {
-
   const playlists = props.playlists;
 
   return (
     <sidebar>
-      <img src="juke.svg" alt="Juke" className="logo"/>
+      <img src="juke.svg" alt="Juke" className="logo" />
       <section>
         <h4 className="menu-item">
-          <Link to='/albums'>ALBUMS</Link>
+          <Link to="/albums">ALBUMS</Link>
         </h4>
       </section>
       <section>
         <h4 className="menu-item">
-          <Link to='/artists'>ARTISTS</Link>
+          <Link to="/artists">ARTISTS</Link>
         </h4>
       </section>
       <section>
         <h4 className="menu-item">
-          <Link to='/lyrics'>LYRICS</Link>
+          <Link to="/lyrics">LYRICS</Link>
         </h4>
       </section>
       <section>
         <h4 className="menu-item">
-          <Link to='/stations'>STATIONS</Link>
+          <Link to="/stations">STATIONS</Link>
         </h4>
       </section>
       <hr />
@@ -44,15 +42,13 @@ export default function Sidebar(props: SidebarProps) {
       </section>
       <hr />
       <ul className="list-unstyled">
-        {
-          playlists.map(playlist => {
-            return (
-              <li key={playlist.id} className="playlist-item menu-item">
-                <Link to={`/playlists/${playlist.id}`}>{playlist.name}</Link>
-              </li>
-            );
-          })
-        }
+        {playlists.map((playlist) => {
+          return (
+            <li key={playlist.id} className="playlist-item menu-item">
+              <Link to={`/playlists/${playlist.id}`}>{playlist.name}</Link>
+            </li>
+          );
+        })}
       </ul>
     </sidebar>
   );

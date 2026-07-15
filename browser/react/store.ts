@@ -1,11 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
 import type { Middleware, ThunkAction, UnknownAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers/root-reducer';
 import type { AppAction } from './types';
 
 const isDev = import.meta.env.DEV;
 
-const devLogger: Middleware = store => next => action => {
+const devLogger: Middleware = (store) => (next) => (action) => {
   const prev = store.getState();
   const result = next(action);
   console.groupCollapsed((action as UnknownAction).type);

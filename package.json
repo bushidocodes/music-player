@@ -11,7 +11,10 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc -p tsconfig.json && tsc -p browser/tsconfig.json",
-    "lint": "eslint browser/react server",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "seed": "tsx ./bin/seed.ts",
     "db-init": "pg-init juke"
   },
@@ -33,6 +36,7 @@
     "serve-favicon": "^2.5.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.3",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.1.0",
@@ -42,12 +46,8 @@
     "@vitejs/plugin-react": "^6.0.3",
     "@vitest/coverage-v8": "^4.1.10",
     "commander": "^15.0.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^17.7.0",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.63.0",
     "vite": "^8.1.3",
     "vitest": "^4.1.10"
   }

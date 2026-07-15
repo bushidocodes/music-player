@@ -1,23 +1,23 @@
-import React from 'react';
-import { useAppSelector, useAppDispatch } from '../hooks';
-import Station from '../components/Station';
-import { generateStationsFromSongs, convertSong } from '../utils';
 import { toggleSong } from '../action-creators/player';
+import Station from '../components/Station';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import type { Song } from '../types';
+import { convertSong, generateStationsFromSongs } from '../utils';
 
 interface StationContainerProps {
   genre: string;
 }
 
 export default function StationContainer({ genre }: StationContainerProps) {
-  const songs = useAppSelector(state =>
+  const songs = useAppSelector((state) =>
     (generateStationsFromSongs(state.songs)[genre] || []).map(convertSong)
   );
-  const currentSong = useAppSelector(state => state.player.currentSong);
-  const isPlaying = useAppSelector(state => state.player.isPlaying);
+  const currentSong = useAppSelector((state) => state.player.currentSong);
+  const isPlaying = useAppSelector((state) => state.player.isPlaying);
   const dispatch = useAppDispatch();
 
-  const toggleOne = (song: Song, list: Song[]) => dispatch(toggleSong(song, list));
+  const toggleOne = (song: Song, list: Song[]) =>
+    dispatch(toggleSong(song, list));
 
   return (
     <Station

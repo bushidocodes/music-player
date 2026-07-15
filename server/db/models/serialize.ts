@@ -5,11 +5,13 @@ import type { Model } from 'sequelize';
 // plains nested songs straight from their dataValues, which bypasses
 // Song#toJSON — so run the loaded Song instances back through their own toJSON,
 // which strips `url`. See server/db/models/song.ts.
-export function toJSONWithoutSongUrls(instance: Model): Record<string, unknown> {
+export function toJSONWithoutSongUrls(
+  instance: Model
+): Record<string, unknown> {
   const plain = instance.get({ plain: true }) as Record<string, unknown>;
   const songs = instance.get('songs') as Model[] | undefined;
   if (songs) {
-    plain.songs = songs.map(song => song.toJSON());
+    plain.songs = songs.map((song) => song.toJSON());
   }
   return plain;
 }

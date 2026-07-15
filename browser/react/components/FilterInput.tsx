@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { ChangeEvent } from 'react';
 
 interface FilterInputProps {
@@ -8,16 +6,15 @@ interface FilterInputProps {
 }
 
 const FilterInput = (props: FilterInputProps) => {
-
   const handleChange = props.handleChange;
   const inputValue = props.inputValue;
 
   return (
-    <form className='mb-3' style={{marginTop: '20px'}}>
+    <form className="mb-3" style={{ marginTop: '20px' }}>
       <input
         onChange={handleChange}
         value={inputValue}
-        className='form-control'
+        className="form-control"
         placeholder="Enter artist name"
       />
     </form>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import type { Stations } from '../types';
@@ -12,7 +11,7 @@ export default function Stations(props: StationsProps) {
     <div>
       <h3>Stations</h3>
       <div className="list-group">
-        {Object.keys(props.stations).map(genre => (
+        {Object.keys(props.stations).map((genre) => (
           <div className="list-group-item" key={genre}>
             <Link to={`/stations/${genre}`}>{genre}</Link>
           </div>

@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import albumsReducer from './albums-reducer';
+import artistsReducer from './artists-reducer';
 import lyricsReducer from './lyrics-reducer';
 import playerReducer from './player-reducer';
-import artistsReducer from './artists-reducer';
-import albumsReducer from './albums-reducer';
 import playlistsReducer from './playlists-reducer';
 import songsReducer from './songs-reducer';
 

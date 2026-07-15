@@ -1,6 +1,6 @@
 import express from 'express';
-import { HttpError } from '../http-error.js';
 import type { ArtistRepository } from '../../db/models/types.js';
+import { HttpError } from '../http-error.js';
 
 export default function createArtistsRouter(Artist: ArtistRepository) {
   const router = express.Router();

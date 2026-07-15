@@ -1,5 +1,5 @@
 import { RECEIVE_SONGS } from '../constants';
-import type { SongsState, AppAction } from '../types';
+import type { AppAction, SongsState } from '../types';
 
 const initialSongsState: SongsState = [];
 

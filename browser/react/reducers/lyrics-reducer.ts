@@ -1,25 +1,19 @@
-import {
-  SET_LYRICS
-} from '../constants';
-import type { LyricsState, AppAction } from '../types';
+import { SET_LYRICS } from '../constants';
+import type { AppAction, LyricsState } from '../types';
 
 const initialLyricsState: LyricsState = {
-  text: null
+  text: null,
 };
 
 export default function lyricsReducer(
   state: LyricsState = initialLyricsState,
   action: AppAction
 ): LyricsState {
-
   switch (action.type) {
-
     case SET_LYRICS:
       return { ...state, text: action.text };
 
     default:
       return state;
-
   }
-
 }

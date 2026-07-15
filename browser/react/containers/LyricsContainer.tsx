@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useAppSelector, useAppDispatch } from '../hooks';
-import Lyrics from '../components/Lyrics';
+import { useState } from 'react';
 import { searchLyrics } from '../action-creators/lyrics';
+import Lyrics from '../components/Lyrics';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 export default function LyricsContainer() {
-  const lyrics = useAppSelector(state => state.lyrics);
+  const lyrics = useAppSelector((state) => state.lyrics);
   const dispatch = useAppDispatch();
   const [artistQuery, setArtistQuery] = useState('');
   const [songQuery, setSongQuery] = useState('');
