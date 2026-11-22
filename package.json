@@ -31,7 +31,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-redux": "^9.0.0",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^7.18.2",
     "sequelize": "^6.37.5",
     "serve-favicon": "^2.5.1"
   },
