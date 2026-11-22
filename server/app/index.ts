@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.get('/*', (req, res) => {
+app.get('/{*path}', (req, res) => {
   res.sendFile(app.get('indexHTMLPath'));
 });
 
